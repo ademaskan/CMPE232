@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="CMPE232ModelStoreContainer" CdmEntityContainer="CMPE232Entities">
+    <EntitySetMapping Name="BRANCHes">
+      <EntityTypeMapping TypeName="CMPE232Model.BRANCH">
+        <MappingFragment StoreEntitySet="BRANCH">
+          <ScalarProperty Name="branch_id" ColumnName="branch_id" />
+          <ScalarProperty Name="branch_name" ColumnName="branch_name" />
+          <ScalarProperty Name="branch_city" ColumnName="branch_city" />
+          <ScalarProperty Name="branch_address" ColumnName="branch_address" />
+          <ScalarProperty Name="branch_district" ColumnName="branch_district" />
+          <ScalarProperty Name="branch_contact_number" ColumnName="branch_contact_number" />
+          <ScalarProperty Name="branch_capacity" ColumnName="branch_capacity" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BRANCH_PERFORMANCE">
+      <EntityTypeMapping TypeName="CMPE232Model.BRANCH_PERFORMANCE">
+        <MappingFragment StoreEntitySet="BRANCH_PERFORMANCE">
+          <ScalarProperty Name="branch_id" ColumnName="branch_id" />
+          <ScalarProperty Name="month" ColumnName="month" />
+          <ScalarProperty Name="year" ColumnName="year" />
+          <ScalarProperty Name="revenue" ColumnName="revenue" />
+          <ScalarProperty Name="expenses" ColumnName="expenses" />
+          <ScalarProperty Name="net_profit" ColumnName="net_profit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="COURSE_CATEGORY">
+      <EntityTypeMapping TypeName="CMPE232Model.COURSE_CATEGORY">
+        <MappingFragment StoreEntitySet="COURSE_CATEGORY">
+          <ScalarProperty Name="category_id" ColumnName="category_id" />
+          <ScalarProperty Name="course_category_name" ColumnName="course_category_name" />
+          <ScalarProperty Name="description" ColumnName="description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="COURSE_ENROLLMENT">
+      <EntityTypeMapping TypeName="CMPE232Model.COURSE_ENROLLMENT">
+        <MappingFragment StoreEntitySet="COURSE_ENROLLMENT">
+          <ScalarProperty Name="enrollment_id" ColumnName="enrollment_id" />
+          <ScalarProperty Name="member_id" ColumnName="member_id" />
+          <ScalarProperty Name="category_id" ColumnName="category_id" />
+          <ScalarProperty Name="enrollment_date" ColumnName="enrollment_date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EMPLOYEEs">
+      <EntityTypeMapping TypeName="CMPE232Model.EMPLOYEE">
+        <MappingFragment StoreEntitySet="EMPLOYEE">
+          <ScalarProperty Name="employee_id" ColumnName="employee_id" />
+          <ScalarProperty Name="employee_first_name" ColumnName="employee_first_name" />
+          <ScalarProperty Name="employee_last_name" ColumnName="employee_last_name" />
+          <ScalarProperty Name="position" ColumnName="position" />
+          <ScalarProperty Name="hire_date" ColumnName="hire_date" />
+          <ScalarProperty Name="salary" ColumnName="salary" />
+          <ScalarProperty Name="branch_id" ColumnName="branch_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FINANCIAL_RECORD">
+      <EntityTypeMapping TypeName="CMPE232Model.FINANCIAL_RECORD">
+        <MappingFragment StoreEntitySet="FINANCIAL_RECORD">
+          <ScalarProperty Name="record_id" ColumnName="record_id" />
+          <ScalarProperty Name="branch_id" ColumnName="branch_id" />
+          <ScalarProperty Name="member_id" ColumnName="member_id" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+          <ScalarProperty Name="payment_date" ColumnName="payment_date" />
+          <ScalarProperty Name="payment_method" ColumnName="payment_method" />
+          <ScalarProperty Name="transaction_type" ColumnName="transaction_type" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MEMBERs">
+      <EntityTypeMapping TypeName="CMPE232Model.MEMBER">
+        <MappingFragment StoreEntitySet="MEMBER">
+          <ScalarProperty Name="member_id" ColumnName="member_id" />
+          <ScalarProperty Name="member_first_name" ColumnName="member_first_name" />
+          <ScalarProperty Name="member_last_name" ColumnName="member_last_name" />
+          <ScalarProperty Name="member_email" ColumnName="member_email" />
+          <ScalarProperty Name="member_phone_number" ColumnName="member_phone_number" />
+          <ScalarProperty Name="member_address" ColumnName="member_address" />
+          <ScalarProperty Name="date_of_birth" ColumnName="date_of_birth" />
+          <ScalarProperty Name="member_gender" ColumnName="member_gender" />
+          <ScalarProperty Name="member_join_date" ColumnName="member_join_date" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MEMBERSHIPs">
+      <EntityTypeMapping TypeName="CMPE232Model.MEMBERSHIP">
+        <MappingFragment StoreEntitySet="MEMBERSHIP">
+          <ScalarProperty Name="membership_id" ColumnName="membership_id" />
+          <ScalarProperty Name="member_id" ColumnName="member_id" />
+          <ScalarProperty Name="branch_id" ColumnName="branch_id" />
+          <ScalarProperty Name="membership_type" ColumnName="membership_type" />
+          <ScalarProperty Name="start_date" ColumnName="start_date" />
+          <ScalarProperty Name="end_date" ColumnName="end_date" />
+          <ScalarProperty Name="fee_amount" ColumnName="fee_amount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

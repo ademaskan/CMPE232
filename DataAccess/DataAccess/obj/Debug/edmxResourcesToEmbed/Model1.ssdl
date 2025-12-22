@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CMPE232Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="BRANCH">
+    <Key>
+      <PropertyRef Name="branch_id" />
+    </Key>
+    <Property Name="branch_id" Type="int" Nullable="false" />
+    <Property Name="branch_name" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="branch_city" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="branch_address" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="branch_district" Type="varchar" MaxLength="50" />
+    <Property Name="branch_contact_number" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="branch_capacity" Type="int" />
+  </EntityType>
+  <EntityType Name="BRANCH_PERFORMANCE">
+    <Key>
+      <PropertyRef Name="branch_id" />
+      <PropertyRef Name="month" />
+      <PropertyRef Name="year" />
+    </Key>
+    <Property Name="branch_id" Type="int" Nullable="false" />
+    <Property Name="month" Type="int" Nullable="false" />
+    <Property Name="year" Type="int" Nullable="false" />
+    <Property Name="revenue" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+    <Property Name="expenses" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+    <Property Name="net_profit" Type="decimal" Precision="13" Scale="2" StoreGeneratedPattern="Computed" />
+  </EntityType>
+  <EntityType Name="COURSE_CATEGORY">
+    <Key>
+      <PropertyRef Name="category_id" />
+    </Key>
+    <Property Name="category_id" Type="int" Nullable="false" />
+    <Property Name="course_category_name" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="description" Type="text" />
+  </EntityType>
+  <EntityType Name="COURSE_ENROLLMENT">
+    <Key>
+      <PropertyRef Name="enrollment_id" />
+    </Key>
+    <Property Name="enrollment_id" Type="int" Nullable="false" />
+    <Property Name="member_id" Type="int" Nullable="false" />
+    <Property Name="category_id" Type="int" Nullable="false" />
+    <Property Name="enrollment_date" Type="date" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EMPLOYEE">
+    <Key>
+      <PropertyRef Name="employee_id" />
+    </Key>
+    <Property Name="employee_id" Type="int" Nullable="false" />
+    <Property Name="employee_first_name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="employee_last_name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="position" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="hire_date" Type="date" Nullable="false" />
+    <Property Name="salary" Type="decimal" Precision="10" Scale="2" />
+    <Property Name="branch_id" Type="int" />
+  </EntityType>
+  <EntityType Name="FINANCIAL_RECORD">
+    <Key>
+      <PropertyRef Name="record_id" />
+    </Key>
+    <Property Name="record_id" Type="int" Nullable="false" />
+    <Property Name="branch_id" Type="int" Nullable="false" />
+    <Property Name="member_id" Type="int" />
+    <Property Name="amount" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+    <Property Name="payment_date" Type="date" Nullable="false" />
+    <Property Name="payment_method" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="transaction_type" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MEMBER">
+    <Key>
+      <PropertyRef Name="member_id" />
+    </Key>
+    <Property Name="member_id" Type="int" Nullable="false" />
+    <Property Name="member_first_name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="member_last_name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="member_email" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="member_phone_number" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="member_address" Type="varchar" MaxLength="200" />
+    <Property Name="date_of_birth" Type="date" Nullable="false" />
+    <Property Name="member_gender" Type="char" MaxLength="1" />
+    <Property Name="member_join_date" Type="date" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MEMBERSHIP">
+    <Key>
+      <PropertyRef Name="membership_id" />
+    </Key>
+    <Property Name="membership_id" Type="int" Nullable="false" />
+    <Property Name="member_id" Type="int" Nullable="false" />
+    <Property Name="branch_id" Type="int" Nullable="false" />
+    <Property Name="membership_type" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="start_date" Type="date" Nullable="false" />
+    <Property Name="end_date" Type="date" Nullable="false" />
+    <Property Name="fee_amount" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+  </EntityType>
+  <Association Name="fk_employee_branch">
+    <End Role="BRANCH" Type="Self.BRANCH" Multiplicity="0..1" />
+    <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BRANCH">
+        <PropertyRef Name="branch_id" />
+      </Principal>
+      <Dependent Role="EMPLOYEE">
+        <PropertyRef Name="branch_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_enrollment_category">
+    <End Role="COURSE_CATEGORY" Type="Self.COURSE_CATEGORY" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="COURSE_ENROLLMENT" Type="Self.COURSE_ENROLLMENT" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="COURSE_CATEGORY">
+        <PropertyRef Name="category_id" />
+      </Principal>
+      <Dependent Role="COURSE_ENROLLMENT">
+        <PropertyRef Name="category_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_enrollment_member">
+    <End Role="MEMBER" Type="Self.MEMBER" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="COURSE_ENROLLMENT" Type="Self.COURSE_ENROLLMENT" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MEMBER">
+        <PropertyRef Name="member_id" />
+      </Principal>
+      <Dependent Role="COURSE_ENROLLMENT">
+        <PropertyRef Name="member_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_financial_branch">
+    <End Role="BRANCH" Type="Self.BRANCH" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="FINANCIAL_RECORD" Type="Self.FINANCIAL_RECORD" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BRANCH">
+        <PropertyRef Name="branch_id" />
+      </Principal>
+      <Dependent Role="FINANCIAL_RECORD">
+        <PropertyRef Name="branch_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_financial_member">
+    <End Role="MEMBER" Type="Self.MEMBER" Multiplicity="0..1" />
+    <End Role="FINANCIAL_RECORD" Type="Self.FINANCIAL_RECORD" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MEMBER">
+        <PropertyRef Name="member_id" />
+      </Principal>
+      <Dependent Role="FINANCIAL_RECORD">
+        <PropertyRef Name="member_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_membership_branch">
+    <End Role="BRANCH" Type="Self.BRANCH" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="MEMBERSHIP" Type="Self.MEMBERSHIP" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BRANCH">
+        <PropertyRef Name="branch_id" />
+      </Principal>
+      <Dependent Role="MEMBERSHIP">
+        <PropertyRef Name="branch_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_membership_member">
+    <End Role="MEMBER" Type="Self.MEMBER" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="MEMBERSHIP" Type="Self.MEMBERSHIP" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MEMBER">
+        <PropertyRef Name="member_id" />
+      </Principal>
+      <Dependent Role="MEMBERSHIP">
+        <PropertyRef Name="member_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_performance_branch">
+    <End Role="BRANCH" Type="Self.BRANCH" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BRANCH_PERFORMANCE" Type="Self.BRANCH_PERFORMANCE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BRANCH">
+        <PropertyRef Name="branch_id" />
+      </Principal>
+      <Dependent Role="BRANCH_PERFORMANCE">
+        <PropertyRef Name="branch_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CMPE232ModelStoreContainer">
+    <EntitySet Name="BRANCH" EntityType="Self.BRANCH" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="BRANCH_PERFORMANCE" EntityType="Self.BRANCH_PERFORMANCE" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="COURSE_CATEGORY" EntityType="Self.COURSE_CATEGORY" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="COURSE_ENROLLMENT" EntityType="Self.COURSE_ENROLLMENT" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="EMPLOYEE" EntityType="Self.EMPLOYEE" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="FINANCIAL_RECORD" EntityType="Self.FINANCIAL_RECORD" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MEMBER" EntityType="Self.MEMBER" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MEMBERSHIP" EntityType="Self.MEMBERSHIP" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_employee_branch" Association="Self.fk_employee_branch">
+      <End Role="BRANCH" EntitySet="BRANCH" />
+      <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+    </AssociationSet>
+    <AssociationSet Name="fk_enrollment_category" Association="Self.fk_enrollment_category">
+      <End Role="COURSE_CATEGORY" EntitySet="COURSE_CATEGORY" />
+      <End Role="COURSE_ENROLLMENT" EntitySet="COURSE_ENROLLMENT" />
+    </AssociationSet>
+    <AssociationSet Name="fk_enrollment_member" Association="Self.fk_enrollment_member">
+      <End Role="MEMBER" EntitySet="MEMBER" />
+      <End Role="COURSE_ENROLLMENT" EntitySet="COURSE_ENROLLMENT" />
+    </AssociationSet>
+    <AssociationSet Name="fk_financial_branch" Association="Self.fk_financial_branch">
+      <End Role="BRANCH" EntitySet="BRANCH" />
+      <End Role="FINANCIAL_RECORD" EntitySet="FINANCIAL_RECORD" />
+    </AssociationSet>
+    <AssociationSet Name="fk_financial_member" Association="Self.fk_financial_member">
+      <End Role="MEMBER" EntitySet="MEMBER" />
+      <End Role="FINANCIAL_RECORD" EntitySet="FINANCIAL_RECORD" />
+    </AssociationSet>
+    <AssociationSet Name="fk_membership_branch" Association="Self.fk_membership_branch">
+      <End Role="BRANCH" EntitySet="BRANCH" />
+      <End Role="MEMBERSHIP" EntitySet="MEMBERSHIP" />
+    </AssociationSet>
+    <AssociationSet Name="fk_membership_member" Association="Self.fk_membership_member">
+      <End Role="MEMBER" EntitySet="MEMBER" />
+      <End Role="MEMBERSHIP" EntitySet="MEMBERSHIP" />
+    </AssociationSet>
+    <AssociationSet Name="fk_performance_branch" Association="Self.fk_performance_branch">
+      <End Role="BRANCH" EntitySet="BRANCH" />
+      <End Role="BRANCH_PERFORMANCE" EntitySet="BRANCH_PERFORMANCE" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
