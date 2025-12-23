@@ -14,9 +14,9 @@ namespace DataAccess
     
     public partial class FINANCIAL_RECORD
     {
-        public int record_id { get; set; }
-        public int branch_id { get; set; }
-        public Nullable<int> member_id { get; set; }
+        public int ID { get; set; }
+        public int BRANCHID { get; set; }
+        public Nullable<int> MEMBERID { get; set; }
         public decimal amount { get; set; }
         public System.DateTime payment_date { get; set; }
         public string payment_method { get; set; }

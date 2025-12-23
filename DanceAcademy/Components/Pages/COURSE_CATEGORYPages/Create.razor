@@ -1,0 +1,49 @@
+﻿@page "/course_categories/create"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>COURSE_CATEGORY</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="COURSE_CATEGORY" OnValidSubmit="AddCOURSE_CATEGORY" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="course_category_name" class="form-label">course_category_name:</label> 
+                <InputText id="course_category_name" @bind-Value="COURSE_CATEGORY.course_category_name" class="form-control" /> 
+                <ValidationMessage For="() => COURSE_CATEGORY.course_category_name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">description:</label> 
+                <InputText id="description" @bind-Value="COURSE_CATEGORY.description" class="form-control" /> 
+                <ValidationMessage For="() => COURSE_CATEGORY.description" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/course_categories">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private COURSE_CATEGORY COURSE_CATEGORY { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddCOURSE_CATEGORY()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.COURSE_CATEGORY.Add(COURSE_CATEGORY);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/course_categories");
+    }
+}

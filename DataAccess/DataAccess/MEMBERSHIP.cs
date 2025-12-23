@@ -14,9 +14,9 @@ namespace DataAccess
     
     public partial class MEMBERSHIP
     {
-        public int membership_id { get; set; }
-        public int member_id { get; set; }
-        public int branch_id { get; set; }
+        public int ID { get; set; }
+        public int MEMBERID { get; set; }
+        public int BRANCHID { get; set; }
         public string membership_type { get; set; }
         public System.DateTime start_date { get; set; }
         public System.DateTime end_date { get; set; }

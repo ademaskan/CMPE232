@@ -1,0 +1,41 @@
+﻿@page "/financial_records"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using DataAccess
+@using DanceAcademy.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="financial_records/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.FINANCIAL_RECORD">
+    <PropertyColumn Property="financial_record => financial_record.BRANCHID" />
+    <PropertyColumn Property="financial_record => financial_record.MEMBERID" />
+    <PropertyColumn Property="financial_record => financial_record.amount" />
+    <PropertyColumn Property="financial_record => financial_record.payment_date" />
+    <PropertyColumn Property="financial_record => financial_record.payment_method" />
+    <PropertyColumn Property="financial_record => financial_record.transaction_type" />
+
+    <TemplateColumn Context="financial_record">
+        <a href="@($"financial_records/edit?id={financial_record.ID}")">Edit</a> |
+        <a href="@($"financial_records/details?id={financial_record.ID}")">Details</a> |
+        <a href="@($"financial_records/delete?id={financial_record.ID}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private DanceAcademyContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

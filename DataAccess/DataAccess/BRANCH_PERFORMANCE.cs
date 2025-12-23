@@ -14,7 +14,8 @@ namespace DataAccess
     
     public partial class BRANCH_PERFORMANCE
     {
-        public int branch_id { get; set; }
+        public int ID { get; set; }
+        public int BRANCHID { get; set; }
         public int month { get; set; }
         public int year { get; set; }
         public decimal revenue { get; set; }

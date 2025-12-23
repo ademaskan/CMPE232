@@ -14,9 +14,9 @@ namespace DataAccess
     
     public partial class COURSE_ENROLLMENT
     {
-        public int enrollment_id { get; set; }
-        public int member_id { get; set; }
-        public int category_id { get; set; }
+        public int ID { get; set; }
+        public int MEMBERID { get; set; }
+        public int COURSE_CATEGORYID { get; set; }
         public System.DateTime enrollment_date { get; set; }
     
         public virtual COURSE_CATEGORY COURSE_CATEGORY { get; set; }

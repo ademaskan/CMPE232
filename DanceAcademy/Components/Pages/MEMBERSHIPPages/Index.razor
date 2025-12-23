@@ -1,0 +1,41 @@
+﻿@page "/memberships"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using DataAccess
+@using DanceAcademy.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="memberships/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.MEMBERSHIP">
+    <PropertyColumn Property="membership => membership.MEMBERID" />
+    <PropertyColumn Property="membership => membership.BRANCHID" />
+    <PropertyColumn Property="membership => membership.membership_type" />
+    <PropertyColumn Property="membership => membership.start_date" />
+    <PropertyColumn Property="membership => membership.end_date" />
+    <PropertyColumn Property="membership => membership.fee_amount" />
+
+    <TemplateColumn Context="membership">
+        <a href="@($"memberships/edit?id={membership.ID}")">Edit</a> |
+        <a href="@($"memberships/details?id={membership.ID}")">Details</a> |
+        <a href="@($"memberships/delete?id={membership.ID}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private DanceAcademyContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

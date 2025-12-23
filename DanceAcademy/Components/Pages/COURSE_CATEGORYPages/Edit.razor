@@ -1,0 +1,94 @@
+﻿@page "/course_categories/edit"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>COURSE_CATEGORY</h2>
+<hr />
+@if (COURSE_CATEGORY is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="COURSE_CATEGORY" OnValidSubmit="UpdateCOURSE_CATEGORY" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="COURSE_CATEGORY.ID" value="@COURSE_CATEGORY.ID" />
+                <div class="mb-3">
+                    <label for="course_category_name" class="form-label">course_category_name:</label>
+                    <InputText id="course_category_name" @bind-Value="COURSE_CATEGORY.course_category_name" class="form-control" />
+                    <ValidationMessage For="() => COURSE_CATEGORY.course_category_name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">description:</label>
+                    <InputText id="description" @bind-Value="COURSE_CATEGORY.description" class="form-control" />
+                    <ValidationMessage For="() => COURSE_CATEGORY.description" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/course_categories">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    [SupplyParameterFromForm]
+    private COURSE_CATEGORY? COURSE_CATEGORY { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        COURSE_CATEGORY ??= await context.COURSE_CATEGORY.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (COURSE_CATEGORY is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateCOURSE_CATEGORY()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(COURSE_CATEGORY!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!COURSE_CATEGORYExists(COURSE_CATEGORY!.ID))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/course_categories");
+    }
+
+    private bool COURSE_CATEGORYExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.COURSE_CATEGORY.Any(e => e.ID == id);
+    }
+}

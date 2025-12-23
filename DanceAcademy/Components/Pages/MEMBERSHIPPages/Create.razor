@@ -1,0 +1,69 @@
+﻿@page "/memberships/create"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>MEMBERSHIP</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="MEMBERSHIP" OnValidSubmit="AddMEMBERSHIP" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="memberid" class="form-label">MEMBERID:</label> 
+                <InputNumber id="memberid" @bind-Value="MEMBERSHIP.MEMBERID" class="form-control" /> 
+                <ValidationMessage For="() => MEMBERSHIP.MEMBERID" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="branchid" class="form-label">BRANCHID:</label> 
+                <InputNumber id="branchid" @bind-Value="MEMBERSHIP.BRANCHID" class="form-control" /> 
+                <ValidationMessage For="() => MEMBERSHIP.BRANCHID" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="membership_type" class="form-label">membership_type:</label> 
+                <InputText id="membership_type" @bind-Value="MEMBERSHIP.membership_type" class="form-control" /> 
+                <ValidationMessage For="() => MEMBERSHIP.membership_type" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="start_date" class="form-label">start_date:</label> 
+                <InputDate id="start_date" @bind-Value="MEMBERSHIP.start_date" class="form-control" /> 
+                <ValidationMessage For="() => MEMBERSHIP.start_date" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="end_date" class="form-label">end_date:</label> 
+                <InputDate id="end_date" @bind-Value="MEMBERSHIP.end_date" class="form-control" /> 
+                <ValidationMessage For="() => MEMBERSHIP.end_date" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="fee_amount" class="form-label">fee_amount:</label> 
+                <InputNumber id="fee_amount" @bind-Value="MEMBERSHIP.fee_amount" class="form-control" /> 
+                <ValidationMessage For="() => MEMBERSHIP.fee_amount" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/memberships">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private MEMBERSHIP MEMBERSHIP { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddMEMBERSHIP()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.MEMBERSHIP.Add(MEMBERSHIP);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/memberships");
+    }
+}

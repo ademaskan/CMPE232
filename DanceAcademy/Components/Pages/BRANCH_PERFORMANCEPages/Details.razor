@@ -1,0 +1,56 @@
+﻿@page "/branch_performances/details"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>BRANCH_PERFORMANCE</h2>
+    <hr />
+    @if (branch_performance is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">BRANCHID</dt>
+            <dd class="col-sm-10">@branch_performance.BRANCHID</dd>
+            <dt class="col-sm-2">month</dt>
+            <dd class="col-sm-10">@branch_performance.month</dd>
+            <dt class="col-sm-2">year</dt>
+            <dd class="col-sm-10">@branch_performance.year</dd>
+            <dt class="col-sm-2">revenue</dt>
+            <dd class="col-sm-10">@branch_performance.revenue</dd>
+            <dt class="col-sm-2">expenses</dt>
+            <dd class="col-sm-10">@branch_performance.expenses</dd>
+            <dt class="col-sm-2">net_profit</dt>
+            <dd class="col-sm-10">@branch_performance.net_profit</dd>
+        </dl>
+        <div>
+            <a href="@($"/branch_performances/edit?id={branch_performance.ID}")">Edit</a> |
+            <a href="@($"/branch_performances")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private BRANCH_PERFORMANCE? branch_performance;
+
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        branch_performance = await context.BRANCH_PERFORMANCE.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (branch_performance is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

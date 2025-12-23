@@ -1,11 +1,19 @@
 is_global = true
 build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = DanceAcademy
 build_property.RootNamespace = DanceAcademy
@@ -28,16 +36,176 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCHPages/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hQYWdlc1xDcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCHPages/Delete.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hQYWdlc1xEZWxldGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCHPages/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hQYWdlc1xEZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCHPages/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hQYWdlc1xFZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCHPages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hQYWdlc1xJbmRleC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCH_PERFORMANCEPages/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hfUEVSRk9STUFOQ0VQYWdlc1xDcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCH_PERFORMANCEPages/Delete.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hfUEVSRk9STUFOQ0VQYWdlc1xEZWxldGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCH_PERFORMANCEPages/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hfUEVSRk9STUFOQ0VQYWdlc1xEZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCH_PERFORMANCEPages/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hfUEVSRk9STUFOQ0VQYWdlc1xFZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/BRANCH_PERFORMANCEPages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hfUEVSRk9STUFOQ0VQYWdlc1xJbmRleC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb3VudGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_CATEGORYPages/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfQ0FURUdPUllQYWdlc1xDcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_CATEGORYPages/Delete.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfQ0FURUdPUllQYWdlc1xEZWxldGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_CATEGORYPages/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfQ0FURUdPUllQYWdlc1xEZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_CATEGORYPages/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfQ0FURUdPUllQYWdlc1xFZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_CATEGORYPages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfQ0FURUdPUllQYWdlc1xJbmRleC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_ENROLLMENTPages/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfRU5ST0xMTUVOVFBhZ2VzXENyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_ENROLLMENTPages/Delete.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfRU5ST0xMTUVOVFBhZ2VzXERlbGV0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_ENROLLMENTPages/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfRU5ST0xMTUVOVFBhZ2VzXERldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_ENROLLMENTPages/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfRU5ST0xMTUVOVFBhZ2VzXEVkaXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_ENROLLMENTPages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfRU5ST0xMTUVOVFBhZ2VzXEluZGV4LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/EMPLOYEEPages/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFTVBMT1lFRVBhZ2VzXENyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/EMPLOYEEPages/Delete.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFTVBMT1lFRVBhZ2VzXERlbGV0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/EMPLOYEEPages/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFTVBMT1lFRVBhZ2VzXERldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/EMPLOYEEPages/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFTVBMT1lFRVBhZ2VzXEVkaXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/EMPLOYEEPages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFTVBMT1lFRVBhZ2VzXEluZGV4LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/FINANCIAL_RECORDPages/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xGSU5BTkNJQUxfUkVDT1JEUGFnZXNcQ3JlYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/FINANCIAL_RECORDPages/Delete.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xGSU5BTkNJQUxfUkVDT1JEUGFnZXNcRGVsZXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/FINANCIAL_RECORDPages/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xGSU5BTkNJQUxfUkVDT1JEUGFnZXNcRGV0YWlscy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/FINANCIAL_RECORDPages/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xGSU5BTkNJQUxfUkVDT1JEUGFnZXNcRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/FINANCIAL_RECORDPages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xGSU5BTkNJQUxfUkVDT1JEUGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERPages/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJQYWdlc1xDcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERPages/Delete.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJQYWdlc1xEZWxldGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERPages/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJQYWdlc1xEZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERPages/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJQYWdlc1xFZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERPages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJQYWdlc1xJbmRleC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERSHIPPages/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJTSElQUGFnZXNcQ3JlYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERSHIPPages/Delete.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJTSElQUGFnZXNcRGVsZXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERSHIPPages/Details.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJTSElQUGFnZXNcRGV0YWlscy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERSHIPPages/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJTSElQUGFnZXNcRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERSHIPPages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJTSElQUGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/Weather.razor]

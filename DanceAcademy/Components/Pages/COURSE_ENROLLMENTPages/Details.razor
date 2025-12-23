@@ -1,0 +1,50 @@
+﻿@page "/course_enrollments/details"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>COURSE_ENROLLMENT</h2>
+    <hr />
+    @if (course_enrollment is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">MEMBERID</dt>
+            <dd class="col-sm-10">@course_enrollment.MEMBERID</dd>
+            <dt class="col-sm-2">COURSE_CATEGORYID</dt>
+            <dd class="col-sm-10">@course_enrollment.COURSE_CATEGORYID</dd>
+            <dt class="col-sm-2">enrollment_date</dt>
+            <dd class="col-sm-10">@course_enrollment.enrollment_date</dd>
+        </dl>
+        <div>
+            <a href="@($"/course_enrollments/edit?id={course_enrollment.ID}")">Edit</a> |
+            <a href="@($"/course_enrollments")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private COURSE_ENROLLMENT? course_enrollment;
+
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        course_enrollment = await context.COURSE_ENROLLMENT.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (course_enrollment is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

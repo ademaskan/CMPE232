@@ -20,7 +20,7 @@ namespace DataAccess
             this.COURSE_ENROLLMENT = new HashSet<COURSE_ENROLLMENT>();
         }
     
-        public int category_id { get; set; }
+        public int ID { get; set; }
         public string course_category_name { get; set; }
         public string description { get; set; }
     

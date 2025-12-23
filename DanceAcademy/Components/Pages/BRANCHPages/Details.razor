@@ -1,0 +1,56 @@
+﻿@page "/branches/details"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>BRANCH</h2>
+    <hr />
+    @if (branch is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">branch_name</dt>
+            <dd class="col-sm-10">@branch.branch_name</dd>
+            <dt class="col-sm-2">branch_city</dt>
+            <dd class="col-sm-10">@branch.branch_city</dd>
+            <dt class="col-sm-2">branch_address</dt>
+            <dd class="col-sm-10">@branch.branch_address</dd>
+            <dt class="col-sm-2">branch_district</dt>
+            <dd class="col-sm-10">@branch.branch_district</dd>
+            <dt class="col-sm-2">branch_contact_number</dt>
+            <dd class="col-sm-10">@branch.branch_contact_number</dd>
+            <dt class="col-sm-2">branch_capacity</dt>
+            <dd class="col-sm-10">@branch.branch_capacity</dd>
+        </dl>
+        <div>
+            <a href="@($"/branches/edit?id={branch.ID}")">Edit</a> |
+            <a href="@($"/branches")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private BRANCH? branch;
+
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        branch = await context.BRANCH.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (branch is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

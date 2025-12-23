@@ -1,0 +1,114 @@
+﻿@page "/memberships/edit"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>MEMBERSHIP</h2>
+<hr />
+@if (MEMBERSHIP is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="MEMBERSHIP" OnValidSubmit="UpdateMEMBERSHIP" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="MEMBERSHIP.ID" value="@MEMBERSHIP.ID" />
+                <div class="mb-3">
+                    <label for="memberid" class="form-label">MEMBERID:</label>
+                    <InputNumber id="memberid" @bind-Value="MEMBERSHIP.MEMBERID" class="form-control" />
+                    <ValidationMessage For="() => MEMBERSHIP.MEMBERID" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="branchid" class="form-label">BRANCHID:</label>
+                    <InputNumber id="branchid" @bind-Value="MEMBERSHIP.BRANCHID" class="form-control" />
+                    <ValidationMessage For="() => MEMBERSHIP.BRANCHID" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="membership_type" class="form-label">membership_type:</label>
+                    <InputText id="membership_type" @bind-Value="MEMBERSHIP.membership_type" class="form-control" />
+                    <ValidationMessage For="() => MEMBERSHIP.membership_type" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="start_date" class="form-label">start_date:</label>
+                    <InputDate id="start_date" @bind-Value="MEMBERSHIP.start_date" class="form-control" />
+                    <ValidationMessage For="() => MEMBERSHIP.start_date" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="end_date" class="form-label">end_date:</label>
+                    <InputDate id="end_date" @bind-Value="MEMBERSHIP.end_date" class="form-control" />
+                    <ValidationMessage For="() => MEMBERSHIP.end_date" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="fee_amount" class="form-label">fee_amount:</label>
+                    <InputNumber id="fee_amount" @bind-Value="MEMBERSHIP.fee_amount" class="form-control" />
+                    <ValidationMessage For="() => MEMBERSHIP.fee_amount" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/memberships">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    [SupplyParameterFromForm]
+    private MEMBERSHIP? MEMBERSHIP { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        MEMBERSHIP ??= await context.MEMBERSHIP.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (MEMBERSHIP is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateMEMBERSHIP()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(MEMBERSHIP!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!MEMBERSHIPExists(MEMBERSHIP!.ID))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/memberships");
+    }
+
+    private bool MEMBERSHIPExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.MEMBERSHIP.Any(e => e.ID == id);
+    }
+}

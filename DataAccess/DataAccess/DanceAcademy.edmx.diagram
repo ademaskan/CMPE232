@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d93240c37d27497f8ca31fa2151957af" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="CMPE232Model.BRANCH" Width="1.5" PointX="0.75" PointY="6.375" />
+        <EntityTypeShape EntityType="CMPE232Model.BRANCH_PERFORMANCE" Width="1.5" PointX="3" PointY="15.25" />
+        <EntityTypeShape EntityType="CMPE232Model.COURSE_CATEGORY" Width="1.5" PointX="0.75" PointY="12" />
+        <EntityTypeShape EntityType="CMPE232Model.COURSE_ENROLLMENT" Width="1.5" PointX="3" PointY="0.875" />
+        <EntityTypeShape EntityType="CMPE232Model.EMPLOYEE" Width="1.5" PointX="3" PointY="8.5" />
+        <EntityTypeShape EntityType="CMPE232Model.FINANCIAL_RECORD" Width="1.5" PointX="6" PointY="6.5" />
+        <EntityTypeShape EntityType="CMPE232Model.MEMBER" Width="1.5" PointX="0.75" PointY="2.25" />
+        <EntityTypeShape EntityType="CMPE232Model.MEMBERSHIP" Width="1.5" PointX="3" PointY="4.5" />
+        <AssociationConnector Association="CMPE232Model.fk_employee_branch" />
+        <AssociationConnector Association="CMPE232Model.fk_financial_branch" />
+        <AssociationConnector Association="CMPE232Model.fk_membership_branch" />
+        <AssociationConnector Association="CMPE232Model.fk_performance_branch" />
+        <AssociationConnector Association="CMPE232Model.fk_enrollment_category" />
+        <AssociationConnector Association="CMPE232Model.fk_enrollment_member" />
+        <AssociationConnector Association="CMPE232Model.fk_financial_member" />
+        <AssociationConnector Association="CMPE232Model.fk_membership_member" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

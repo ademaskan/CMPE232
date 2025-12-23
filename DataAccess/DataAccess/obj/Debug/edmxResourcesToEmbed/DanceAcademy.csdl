@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CMPE232Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="CMPE232Entities3" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="BRANCHes" EntityType="CMPE232Model.BRANCH" />
+    <EntitySet Name="BRANCH_PERFORMANCE" EntityType="CMPE232Model.BRANCH_PERFORMANCE" />
+    <EntitySet Name="COURSE_CATEGORY" EntityType="CMPE232Model.COURSE_CATEGORY" />
+    <EntitySet Name="COURSE_ENROLLMENT" EntityType="CMPE232Model.COURSE_ENROLLMENT" />
+    <EntitySet Name="EMPLOYEEs" EntityType="CMPE232Model.EMPLOYEE" />
+    <EntitySet Name="FINANCIAL_RECORD" EntityType="CMPE232Model.FINANCIAL_RECORD" />
+    <EntitySet Name="MEMBERs" EntityType="CMPE232Model.MEMBER" />
+    <EntitySet Name="MEMBERSHIPs" EntityType="CMPE232Model.MEMBERSHIP" />
+    <AssociationSet Name="fk_employee_branch" Association="CMPE232Model.fk_employee_branch">
+      <End Role="BRANCH" EntitySet="BRANCHes" />
+      <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+    </AssociationSet>
+    <AssociationSet Name="fk_financial_branch" Association="CMPE232Model.fk_financial_branch">
+      <End Role="BRANCH" EntitySet="BRANCHes" />
+      <End Role="FINANCIAL_RECORD" EntitySet="FINANCIAL_RECORD" />
+    </AssociationSet>
+    <AssociationSet Name="fk_membership_branch" Association="CMPE232Model.fk_membership_branch">
+      <End Role="BRANCH" EntitySet="BRANCHes" />
+      <End Role="MEMBERSHIP" EntitySet="MEMBERSHIPs" />
+    </AssociationSet>
+    <AssociationSet Name="fk_performance_branch" Association="CMPE232Model.fk_performance_branch">
+      <End Role="BRANCH" EntitySet="BRANCHes" />
+      <End Role="BRANCH_PERFORMANCE" EntitySet="BRANCH_PERFORMANCE" />
+    </AssociationSet>
+    <AssociationSet Name="fk_enrollment_category" Association="CMPE232Model.fk_enrollment_category">
+      <End Role="COURSE_CATEGORY" EntitySet="COURSE_CATEGORY" />
+      <End Role="COURSE_ENROLLMENT" EntitySet="COURSE_ENROLLMENT" />
+    </AssociationSet>
+    <AssociationSet Name="fk_enrollment_member" Association="CMPE232Model.fk_enrollment_member">
+      <End Role="MEMBER" EntitySet="MEMBERs" />
+      <End Role="COURSE_ENROLLMENT" EntitySet="COURSE_ENROLLMENT" />
+    </AssociationSet>
+    <AssociationSet Name="fk_financial_member" Association="CMPE232Model.fk_financial_member">
+      <End Role="MEMBER" EntitySet="MEMBERs" />
+      <End Role="FINANCIAL_RECORD" EntitySet="FINANCIAL_RECORD" />
+    </AssociationSet>
+    <AssociationSet Name="fk_membership_member" Association="CMPE232Model.fk_membership_member">
+      <End Role="MEMBER" EntitySet="MEMBERs" />
+      <End Role="MEMBERSHIP" EntitySet="MEMBERSHIPs" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="BRANCH">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="branch_name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="branch_city" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="branch_address" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="branch_district" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="branch_contact_number" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="branch_capacity" Type="Int32" />
+    <NavigationProperty Name="EMPLOYEEs" Relationship="CMPE232Model.fk_employee_branch" FromRole="BRANCH" ToRole="EMPLOYEE" />
+    <NavigationProperty Name="FINANCIAL_RECORD" Relationship="CMPE232Model.fk_financial_branch" FromRole="BRANCH" ToRole="FINANCIAL_RECORD" />
+    <NavigationProperty Name="MEMBERSHIPs" Relationship="CMPE232Model.fk_membership_branch" FromRole="BRANCH" ToRole="MEMBERSHIP" />
+    <NavigationProperty Name="BRANCH_PERFORMANCE" Relationship="CMPE232Model.fk_performance_branch" FromRole="BRANCH" ToRole="BRANCH_PERFORMANCE" />
+  </EntityType>
+  <EntityType Name="BRANCH_PERFORMANCE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="BRANCHID" Type="Int32" Nullable="false" />
+    <Property Name="month" Type="Int32" Nullable="false" />
+    <Property Name="year" Type="Int32" Nullable="false" />
+    <Property Name="revenue" Type="Decimal" Nullable="false" Precision="12" Scale="2" />
+    <Property Name="expenses" Type="Decimal" Nullable="false" Precision="12" Scale="2" />
+    <Property Name="net_profit" Type="Decimal" Precision="13" Scale="2" annotation:StoreGeneratedPattern="Computed" />
+    <NavigationProperty Name="BRANCH" Relationship="CMPE232Model.fk_performance_branch" FromRole="BRANCH_PERFORMANCE" ToRole="BRANCH" />
+  </EntityType>
+  <EntityType Name="COURSE_CATEGORY">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="course_category_name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="COURSE_ENROLLMENT" Relationship="CMPE232Model.fk_enrollment_category" FromRole="COURSE_CATEGORY" ToRole="COURSE_ENROLLMENT" />
+  </EntityType>
+  <EntityType Name="COURSE_ENROLLMENT">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="MEMBERID" Type="Int32" Nullable="false" />
+    <Property Name="COURSE_CATEGORYID" Type="Int32" Nullable="false" />
+    <Property Name="enrollment_date" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="COURSE_CATEGORY" Relationship="CMPE232Model.fk_enrollment_category" FromRole="COURSE_ENROLLMENT" ToRole="COURSE_CATEGORY" />
+    <NavigationProperty Name="MEMBER" Relationship="CMPE232Model.fk_enrollment_member" FromRole="COURSE_ENROLLMENT" ToRole="MEMBER" />
+  </EntityType>
+  <EntityType Name="EMPLOYEE">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="employee_first_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="employee_last_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="position" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="hire_date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="salary" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="BRANCHID" Type="Int32" />
+    <NavigationProperty Name="BRANCH" Relationship="CMPE232Model.fk_employee_branch" FromRole="EMPLOYEE" ToRole="BRANCH" />
+  </EntityType>
+  <EntityType Name="FINANCIAL_RECORD">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="BRANCHID" Type="Int32" Nullable="false" />
+    <Property Name="MEMBERID" Type="Int32" />
+    <Property Name="amount" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+    <Property Name="payment_date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="payment_method" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="transaction_type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="BRANCH" Relationship="CMPE232Model.fk_financial_branch" FromRole="FINANCIAL_RECORD" ToRole="BRANCH" />
+    <NavigationProperty Name="MEMBER" Relationship="CMPE232Model.fk_financial_member" FromRole="FINANCIAL_RECORD" ToRole="MEMBER" />
+  </EntityType>
+  <EntityType Name="MEMBER">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="member_first_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="member_last_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="member_email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="member_phone_number" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="member_address" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="date_of_birth" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="member_gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="member_join_date" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="COURSE_ENROLLMENT" Relationship="CMPE232Model.fk_enrollment_member" FromRole="MEMBER" ToRole="COURSE_ENROLLMENT" />
+    <NavigationProperty Name="FINANCIAL_RECORD" Relationship="CMPE232Model.fk_financial_member" FromRole="MEMBER" ToRole="FINANCIAL_RECORD" />
+    <NavigationProperty Name="MEMBERSHIPs" Relationship="CMPE232Model.fk_membership_member" FromRole="MEMBER" ToRole="MEMBERSHIP" />
+  </EntityType>
+  <EntityType Name="MEMBERSHIP">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="MEMBERID" Type="Int32" Nullable="false" />
+    <Property Name="BRANCHID" Type="Int32" Nullable="false" />
+    <Property Name="membership_type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="start_date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="end_date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="fee_amount" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+    <NavigationProperty Name="BRANCH" Relationship="CMPE232Model.fk_membership_branch" FromRole="MEMBERSHIP" ToRole="BRANCH" />
+    <NavigationProperty Name="MEMBER" Relationship="CMPE232Model.fk_membership_member" FromRole="MEMBERSHIP" ToRole="MEMBER" />
+  </EntityType>
+  <Association Name="fk_employee_branch">
+    <End Type="CMPE232Model.BRANCH" Role="BRANCH" Multiplicity="0..1" />
+    <End Type="CMPE232Model.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BRANCH">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="EMPLOYEE">
+        <PropertyRef Name="BRANCHID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_financial_branch">
+    <End Type="CMPE232Model.BRANCH" Role="BRANCH" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="CMPE232Model.FINANCIAL_RECORD" Role="FINANCIAL_RECORD" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BRANCH">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FINANCIAL_RECORD">
+        <PropertyRef Name="BRANCHID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_membership_branch">
+    <End Type="CMPE232Model.BRANCH" Role="BRANCH" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="CMPE232Model.MEMBERSHIP" Role="MEMBERSHIP" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BRANCH">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="MEMBERSHIP">
+        <PropertyRef Name="BRANCHID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_performance_branch">
+    <End Type="CMPE232Model.BRANCH" Role="BRANCH" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="CMPE232Model.BRANCH_PERFORMANCE" Role="BRANCH_PERFORMANCE" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BRANCH">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="BRANCH_PERFORMANCE">
+        <PropertyRef Name="BRANCHID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_enrollment_category">
+    <End Type="CMPE232Model.COURSE_CATEGORY" Role="COURSE_CATEGORY" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="CMPE232Model.COURSE_ENROLLMENT" Role="COURSE_ENROLLMENT" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="COURSE_CATEGORY">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="COURSE_ENROLLMENT">
+        <PropertyRef Name="COURSE_CATEGORYID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_enrollment_member">
+    <End Type="CMPE232Model.MEMBER" Role="MEMBER" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="CMPE232Model.COURSE_ENROLLMENT" Role="COURSE_ENROLLMENT" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MEMBER">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="COURSE_ENROLLMENT">
+        <PropertyRef Name="MEMBERID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_financial_member">
+    <End Type="CMPE232Model.MEMBER" Role="MEMBER" Multiplicity="0..1" />
+    <End Type="CMPE232Model.FINANCIAL_RECORD" Role="FINANCIAL_RECORD" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MEMBER">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="FINANCIAL_RECORD">
+        <PropertyRef Name="MEMBERID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_membership_member">
+    <End Type="CMPE232Model.MEMBER" Role="MEMBER" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="CMPE232Model.MEMBERSHIP" Role="MEMBERSHIP" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MEMBER">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="MEMBERSHIP">
+        <PropertyRef Name="MEMBERID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

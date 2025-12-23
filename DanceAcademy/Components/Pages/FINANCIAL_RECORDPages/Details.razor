@@ -1,0 +1,56 @@
+﻿@page "/financial_records/details"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>FINANCIAL_RECORD</h2>
+    <hr />
+    @if (financial_record is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">BRANCHID</dt>
+            <dd class="col-sm-10">@financial_record.BRANCHID</dd>
+            <dt class="col-sm-2">MEMBERID</dt>
+            <dd class="col-sm-10">@financial_record.MEMBERID</dd>
+            <dt class="col-sm-2">amount</dt>
+            <dd class="col-sm-10">@financial_record.amount</dd>
+            <dt class="col-sm-2">payment_date</dt>
+            <dd class="col-sm-10">@financial_record.payment_date</dd>
+            <dt class="col-sm-2">payment_method</dt>
+            <dd class="col-sm-10">@financial_record.payment_method</dd>
+            <dt class="col-sm-2">transaction_type</dt>
+            <dd class="col-sm-10">@financial_record.transaction_type</dd>
+        </dl>
+        <div>
+            <a href="@($"/financial_records/edit?id={financial_record.ID}")">Edit</a> |
+            <a href="@($"/financial_records")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private FINANCIAL_RECORD? financial_record;
+
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        financial_record = await context.FINANCIAL_RECORD.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (financial_record is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

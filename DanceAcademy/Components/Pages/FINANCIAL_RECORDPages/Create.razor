@@ -1,0 +1,69 @@
+﻿@page "/financial_records/create"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>FINANCIAL_RECORD</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="FINANCIAL_RECORD" OnValidSubmit="AddFINANCIAL_RECORD" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="branchid" class="form-label">BRANCHID:</label> 
+                <InputNumber id="branchid" @bind-Value="FINANCIAL_RECORD.BRANCHID" class="form-control" /> 
+                <ValidationMessage For="() => FINANCIAL_RECORD.BRANCHID" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="memberid" class="form-label">MEMBERID:</label> 
+                <InputNumber id="memberid" @bind-Value="FINANCIAL_RECORD.MEMBERID" class="form-control" /> 
+                <ValidationMessage For="() => FINANCIAL_RECORD.MEMBERID" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="amount" class="form-label">amount:</label> 
+                <InputNumber id="amount" @bind-Value="FINANCIAL_RECORD.amount" class="form-control" /> 
+                <ValidationMessage For="() => FINANCIAL_RECORD.amount" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="payment_date" class="form-label">payment_date:</label> 
+                <InputDate id="payment_date" @bind-Value="FINANCIAL_RECORD.payment_date" class="form-control" /> 
+                <ValidationMessage For="() => FINANCIAL_RECORD.payment_date" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="payment_method" class="form-label">payment_method:</label> 
+                <InputText id="payment_method" @bind-Value="FINANCIAL_RECORD.payment_method" class="form-control" /> 
+                <ValidationMessage For="() => FINANCIAL_RECORD.payment_method" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="transaction_type" class="form-label">transaction_type:</label> 
+                <InputText id="transaction_type" @bind-Value="FINANCIAL_RECORD.transaction_type" class="form-control" /> 
+                <ValidationMessage For="() => FINANCIAL_RECORD.transaction_type" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/financial_records">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private FINANCIAL_RECORD FINANCIAL_RECORD { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddFINANCIAL_RECORD()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.FINANCIAL_RECORD.Add(FINANCIAL_RECORD);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/financial_records");
+    }
+}

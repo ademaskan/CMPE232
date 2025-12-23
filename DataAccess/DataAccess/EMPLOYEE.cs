@@ -14,13 +14,13 @@ namespace DataAccess
     
     public partial class EMPLOYEE
     {
-        public int employee_id { get; set; }
+        public int ID { get; set; }
         public string employee_first_name { get; set; }
         public string employee_last_name { get; set; }
         public string position { get; set; }
         public System.DateTime hire_date { get; set; }
         public Nullable<decimal> salary { get; set; }
-        public Nullable<int> branch_id { get; set; }
+        public Nullable<int> BRANCHID { get; set; }
     
         public virtual BRANCH BRANCH { get; set; }
     }

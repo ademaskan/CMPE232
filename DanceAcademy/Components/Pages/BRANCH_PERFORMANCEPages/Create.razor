@@ -1,0 +1,69 @@
+﻿@page "/branch_performances/create"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>BRANCH_PERFORMANCE</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="BRANCH_PERFORMANCE" OnValidSubmit="AddBRANCH_PERFORMANCE" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="branchid" class="form-label">BRANCHID:</label> 
+                <InputNumber id="branchid" @bind-Value="BRANCH_PERFORMANCE.BRANCHID" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH_PERFORMANCE.BRANCHID" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="month" class="form-label">month:</label> 
+                <InputNumber id="month" @bind-Value="BRANCH_PERFORMANCE.month" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH_PERFORMANCE.month" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="year" class="form-label">year:</label> 
+                <InputNumber id="year" @bind-Value="BRANCH_PERFORMANCE.year" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH_PERFORMANCE.year" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="revenue" class="form-label">revenue:</label> 
+                <InputNumber id="revenue" @bind-Value="BRANCH_PERFORMANCE.revenue" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH_PERFORMANCE.revenue" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="expenses" class="form-label">expenses:</label> 
+                <InputNumber id="expenses" @bind-Value="BRANCH_PERFORMANCE.expenses" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH_PERFORMANCE.expenses" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="net_profit" class="form-label">net_profit:</label> 
+                <InputNumber id="net_profit" @bind-Value="BRANCH_PERFORMANCE.net_profit" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH_PERFORMANCE.net_profit" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/branch_performances">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private BRANCH_PERFORMANCE BRANCH_PERFORMANCE { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddBRANCH_PERFORMANCE()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.BRANCH_PERFORMANCE.Add(BRANCH_PERFORMANCE);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/branch_performances");
+    }
+}

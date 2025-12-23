@@ -23,7 +23,7 @@ namespace DataAccess
             this.BRANCH_PERFORMANCE = new HashSet<BRANCH_PERFORMANCE>();
         }
     
-        public int branch_id { get; set; }
+        public int ID { get; set; }
         public string branch_name { get; set; }
         public string branch_city { get; set; }
         public string branch_address { get; set; }

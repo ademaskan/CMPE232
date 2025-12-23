@@ -1,5 +1,3 @@
-C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\obj\Debug\DataAccess.csproj.AssemblyReference.cache
-C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\obj\Debug\DataAccess.csproj.CoreCompileInputs.cache
 C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\bin\Debug\DataAccess.dll.config
 C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\bin\Debug\DataAccess.dll
 C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\bin\Debug\DataAccess.pdb
@@ -7,6 +5,8 @@ C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\bin\Debug\EntityFramewo
 C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\bin\Debug\EntityFramework.xml
 C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\obj\Debug\DataAccess.csproj.AssemblyReference.cache
+C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\obj\Debug\DataAccess.csproj.CoreCompileInputs.cache
 C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\obj\Debug\DataAccess.csproj.Up2Date
 C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\obj\Debug\DataAccess.dll
 C:\Users\adem\source\repos\CMPE232\DataAccess\DataAccess\obj\Debug\DataAccess.pdb

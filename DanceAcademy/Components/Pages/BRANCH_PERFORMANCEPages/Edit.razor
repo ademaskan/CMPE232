@@ -1,0 +1,114 @@
+﻿@page "/branch_performances/edit"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>BRANCH_PERFORMANCE</h2>
+<hr />
+@if (BRANCH_PERFORMANCE is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="BRANCH_PERFORMANCE" OnValidSubmit="UpdateBRANCH_PERFORMANCE" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="BRANCH_PERFORMANCE.ID" value="@BRANCH_PERFORMANCE.ID" />
+                <div class="mb-3">
+                    <label for="branchid" class="form-label">BRANCHID:</label>
+                    <InputNumber id="branchid" @bind-Value="BRANCH_PERFORMANCE.BRANCHID" class="form-control" />
+                    <ValidationMessage For="() => BRANCH_PERFORMANCE.BRANCHID" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="month" class="form-label">month:</label>
+                    <InputNumber id="month" @bind-Value="BRANCH_PERFORMANCE.month" class="form-control" />
+                    <ValidationMessage For="() => BRANCH_PERFORMANCE.month" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="year" class="form-label">year:</label>
+                    <InputNumber id="year" @bind-Value="BRANCH_PERFORMANCE.year" class="form-control" />
+                    <ValidationMessage For="() => BRANCH_PERFORMANCE.year" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="revenue" class="form-label">revenue:</label>
+                    <InputNumber id="revenue" @bind-Value="BRANCH_PERFORMANCE.revenue" class="form-control" />
+                    <ValidationMessage For="() => BRANCH_PERFORMANCE.revenue" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="expenses" class="form-label">expenses:</label>
+                    <InputNumber id="expenses" @bind-Value="BRANCH_PERFORMANCE.expenses" class="form-control" />
+                    <ValidationMessage For="() => BRANCH_PERFORMANCE.expenses" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="net_profit" class="form-label">net_profit:</label>
+                    <InputNumber id="net_profit" @bind-Value="BRANCH_PERFORMANCE.net_profit" class="form-control" />
+                    <ValidationMessage For="() => BRANCH_PERFORMANCE.net_profit" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/branch_performances">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    [SupplyParameterFromForm]
+    private BRANCH_PERFORMANCE? BRANCH_PERFORMANCE { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        BRANCH_PERFORMANCE ??= await context.BRANCH_PERFORMANCE.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (BRANCH_PERFORMANCE is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateBRANCH_PERFORMANCE()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(BRANCH_PERFORMANCE!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!BRANCH_PERFORMANCEExists(BRANCH_PERFORMANCE!.ID))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/branch_performances");
+    }
+
+    private bool BRANCH_PERFORMANCEExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.BRANCH_PERFORMANCE.Any(e => e.ID == id);
+    }
+}

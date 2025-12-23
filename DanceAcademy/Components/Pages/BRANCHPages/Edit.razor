@@ -1,0 +1,114 @@
+﻿@page "/branches/edit"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>BRANCH</h2>
+<hr />
+@if (BRANCH is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="BRANCH" OnValidSubmit="UpdateBRANCH" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="BRANCH.ID" value="@BRANCH.ID" />
+                <div class="mb-3">
+                    <label for="branch_name" class="form-label">branch_name:</label>
+                    <InputText id="branch_name" @bind-Value="BRANCH.branch_name" class="form-control" />
+                    <ValidationMessage For="() => BRANCH.branch_name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="branch_city" class="form-label">branch_city:</label>
+                    <InputText id="branch_city" @bind-Value="BRANCH.branch_city" class="form-control" />
+                    <ValidationMessage For="() => BRANCH.branch_city" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="branch_address" class="form-label">branch_address:</label>
+                    <InputText id="branch_address" @bind-Value="BRANCH.branch_address" class="form-control" />
+                    <ValidationMessage For="() => BRANCH.branch_address" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="branch_district" class="form-label">branch_district:</label>
+                    <InputText id="branch_district" @bind-Value="BRANCH.branch_district" class="form-control" />
+                    <ValidationMessage For="() => BRANCH.branch_district" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="branch_contact_number" class="form-label">branch_contact_number:</label>
+                    <InputText id="branch_contact_number" @bind-Value="BRANCH.branch_contact_number" class="form-control" />
+                    <ValidationMessage For="() => BRANCH.branch_contact_number" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="branch_capacity" class="form-label">branch_capacity:</label>
+                    <InputNumber id="branch_capacity" @bind-Value="BRANCH.branch_capacity" class="form-control" />
+                    <ValidationMessage For="() => BRANCH.branch_capacity" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/branches">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    [SupplyParameterFromForm]
+    private BRANCH? BRANCH { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        BRANCH ??= await context.BRANCH.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (BRANCH is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateBRANCH()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(BRANCH!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!BRANCHExists(BRANCH!.ID))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/branches");
+    }
+
+    private bool BRANCHExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.BRANCH.Any(e => e.ID == id);
+    }
+}

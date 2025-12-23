@@ -1,0 +1,79 @@
+﻿@page "/members/create"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>MEMBER</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="MEMBER" OnValidSubmit="AddMEMBER" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="member_first_name" class="form-label">member_first_name:</label> 
+                <InputText id="member_first_name" @bind-Value="MEMBER.member_first_name" class="form-control" /> 
+                <ValidationMessage For="() => MEMBER.member_first_name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="member_last_name" class="form-label">member_last_name:</label> 
+                <InputText id="member_last_name" @bind-Value="MEMBER.member_last_name" class="form-control" /> 
+                <ValidationMessage For="() => MEMBER.member_last_name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="member_email" class="form-label">member_email:</label> 
+                <InputText id="member_email" @bind-Value="MEMBER.member_email" class="form-control" /> 
+                <ValidationMessage For="() => MEMBER.member_email" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="member_phone_number" class="form-label">member_phone_number:</label> 
+                <InputText id="member_phone_number" @bind-Value="MEMBER.member_phone_number" class="form-control" /> 
+                <ValidationMessage For="() => MEMBER.member_phone_number" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="member_address" class="form-label">member_address:</label> 
+                <InputText id="member_address" @bind-Value="MEMBER.member_address" class="form-control" /> 
+                <ValidationMessage For="() => MEMBER.member_address" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="date_of_birth" class="form-label">date_of_birth:</label> 
+                <InputDate id="date_of_birth" @bind-Value="MEMBER.date_of_birth" class="form-control" /> 
+                <ValidationMessage For="() => MEMBER.date_of_birth" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="member_gender" class="form-label">member_gender:</label> 
+                <InputText id="member_gender" @bind-Value="MEMBER.member_gender" class="form-control" /> 
+                <ValidationMessage For="() => MEMBER.member_gender" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="member_join_date" class="form-label">member_join_date:</label> 
+                <InputDate id="member_join_date" @bind-Value="MEMBER.member_join_date" class="form-control" /> 
+                <ValidationMessage For="() => MEMBER.member_join_date" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/members">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private MEMBER MEMBER { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddMEMBER()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.MEMBER.Add(MEMBER);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/members");
+    }
+}

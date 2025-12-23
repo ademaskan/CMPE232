@@ -1,0 +1,114 @@
+﻿@page "/employees/edit"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>EMPLOYEE</h2>
+<hr />
+@if (EMPLOYEE is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="EMPLOYEE" OnValidSubmit="UpdateEMPLOYEE" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="EMPLOYEE.ID" value="@EMPLOYEE.ID" />
+                <div class="mb-3">
+                    <label for="employee_first_name" class="form-label">employee_first_name:</label>
+                    <InputText id="employee_first_name" @bind-Value="EMPLOYEE.employee_first_name" class="form-control" />
+                    <ValidationMessage For="() => EMPLOYEE.employee_first_name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="employee_last_name" class="form-label">employee_last_name:</label>
+                    <InputText id="employee_last_name" @bind-Value="EMPLOYEE.employee_last_name" class="form-control" />
+                    <ValidationMessage For="() => EMPLOYEE.employee_last_name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="position" class="form-label">position:</label>
+                    <InputText id="position" @bind-Value="EMPLOYEE.position" class="form-control" />
+                    <ValidationMessage For="() => EMPLOYEE.position" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="hire_date" class="form-label">hire_date:</label>
+                    <InputDate id="hire_date" @bind-Value="EMPLOYEE.hire_date" class="form-control" />
+                    <ValidationMessage For="() => EMPLOYEE.hire_date" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="salary" class="form-label">salary:</label>
+                    <InputNumber id="salary" @bind-Value="EMPLOYEE.salary" class="form-control" />
+                    <ValidationMessage For="() => EMPLOYEE.salary" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="branchid" class="form-label">BRANCHID:</label>
+                    <InputNumber id="branchid" @bind-Value="EMPLOYEE.BRANCHID" class="form-control" />
+                    <ValidationMessage For="() => EMPLOYEE.BRANCHID" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/employees">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    [SupplyParameterFromForm]
+    private EMPLOYEE? EMPLOYEE { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        EMPLOYEE ??= await context.EMPLOYEE.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (EMPLOYEE is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateEMPLOYEE()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(EMPLOYEE!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!EMPLOYEEExists(EMPLOYEE!.ID))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/employees");
+    }
+
+    private bool EMPLOYEEExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.EMPLOYEE.Any(e => e.ID == id);
+    }
+}

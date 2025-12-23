@@ -1,0 +1,69 @@
+﻿@page "/branches/create"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>BRANCH</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="BRANCH" OnValidSubmit="AddBRANCH" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="branch_name" class="form-label">branch_name:</label> 
+                <InputText id="branch_name" @bind-Value="BRANCH.branch_name" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH.branch_name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="branch_city" class="form-label">branch_city:</label> 
+                <InputText id="branch_city" @bind-Value="BRANCH.branch_city" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH.branch_city" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="branch_address" class="form-label">branch_address:</label> 
+                <InputText id="branch_address" @bind-Value="BRANCH.branch_address" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH.branch_address" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="branch_district" class="form-label">branch_district:</label> 
+                <InputText id="branch_district" @bind-Value="BRANCH.branch_district" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH.branch_district" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="branch_contact_number" class="form-label">branch_contact_number:</label> 
+                <InputText id="branch_contact_number" @bind-Value="BRANCH.branch_contact_number" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH.branch_contact_number" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="branch_capacity" class="form-label">branch_capacity:</label> 
+                <InputNumber id="branch_capacity" @bind-Value="BRANCH.branch_capacity" class="form-control" /> 
+                <ValidationMessage For="() => BRANCH.branch_capacity" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/branches">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private BRANCH BRANCH { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddBRANCH()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.BRANCH.Add(BRANCH);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/branches");
+    }
+}

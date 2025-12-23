@@ -1,0 +1,114 @@
+﻿@page "/financial_records/edit"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>FINANCIAL_RECORD</h2>
+<hr />
+@if (FINANCIAL_RECORD is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="FINANCIAL_RECORD" OnValidSubmit="UpdateFINANCIAL_RECORD" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="FINANCIAL_RECORD.ID" value="@FINANCIAL_RECORD.ID" />
+                <div class="mb-3">
+                    <label for="branchid" class="form-label">BRANCHID:</label>
+                    <InputNumber id="branchid" @bind-Value="FINANCIAL_RECORD.BRANCHID" class="form-control" />
+                    <ValidationMessage For="() => FINANCIAL_RECORD.BRANCHID" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="memberid" class="form-label">MEMBERID:</label>
+                    <InputNumber id="memberid" @bind-Value="FINANCIAL_RECORD.MEMBERID" class="form-control" />
+                    <ValidationMessage For="() => FINANCIAL_RECORD.MEMBERID" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="amount" class="form-label">amount:</label>
+                    <InputNumber id="amount" @bind-Value="FINANCIAL_RECORD.amount" class="form-control" />
+                    <ValidationMessage For="() => FINANCIAL_RECORD.amount" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="payment_date" class="form-label">payment_date:</label>
+                    <InputDate id="payment_date" @bind-Value="FINANCIAL_RECORD.payment_date" class="form-control" />
+                    <ValidationMessage For="() => FINANCIAL_RECORD.payment_date" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="payment_method" class="form-label">payment_method:</label>
+                    <InputText id="payment_method" @bind-Value="FINANCIAL_RECORD.payment_method" class="form-control" />
+                    <ValidationMessage For="() => FINANCIAL_RECORD.payment_method" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="transaction_type" class="form-label">transaction_type:</label>
+                    <InputText id="transaction_type" @bind-Value="FINANCIAL_RECORD.transaction_type" class="form-control" />
+                    <ValidationMessage For="() => FINANCIAL_RECORD.transaction_type" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/financial_records">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    [SupplyParameterFromForm]
+    private FINANCIAL_RECORD? FINANCIAL_RECORD { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        FINANCIAL_RECORD ??= await context.FINANCIAL_RECORD.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (FINANCIAL_RECORD is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateFINANCIAL_RECORD()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(FINANCIAL_RECORD!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!FINANCIAL_RECORDExists(FINANCIAL_RECORD!.ID))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/financial_records");
+    }
+
+    private bool FINANCIAL_RECORDExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.FINANCIAL_RECORD.Any(e => e.ID == id);
+    }
+}

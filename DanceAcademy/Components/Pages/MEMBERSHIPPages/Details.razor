@@ -1,0 +1,56 @@
+﻿@page "/memberships/details"
+@using Microsoft.EntityFrameworkCore
+@using DataAccess
+@inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>MEMBERSHIP</h2>
+    <hr />
+    @if (membership is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">MEMBERID</dt>
+            <dd class="col-sm-10">@membership.MEMBERID</dd>
+            <dt class="col-sm-2">BRANCHID</dt>
+            <dd class="col-sm-10">@membership.BRANCHID</dd>
+            <dt class="col-sm-2">membership_type</dt>
+            <dd class="col-sm-10">@membership.membership_type</dd>
+            <dt class="col-sm-2">start_date</dt>
+            <dd class="col-sm-10">@membership.start_date</dd>
+            <dt class="col-sm-2">end_date</dt>
+            <dd class="col-sm-10">@membership.end_date</dd>
+            <dt class="col-sm-2">fee_amount</dt>
+            <dd class="col-sm-10">@membership.fee_amount</dd>
+        </dl>
+        <div>
+            <a href="@($"/memberships/edit?id={membership.ID}")">Edit</a> |
+            <a href="@($"/memberships")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private MEMBERSHIP? membership;
+
+    [SupplyParameterFromQuery]
+    private int ID { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        membership = await context.MEMBERSHIP.FirstOrDefaultAsync(m => m.ID == ID);
+
+        if (membership is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

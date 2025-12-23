@@ -22,7 +22,7 @@ namespace DataAccess
             this.MEMBERSHIPs = new HashSet<MEMBERSHIP>();
         }
     
-        public int member_id { get; set; }
+        public int ID { get; set; }
         public string member_first_name { get; set; }
         public string member_last_name { get; set; }
         public string member_email { get; set; }
