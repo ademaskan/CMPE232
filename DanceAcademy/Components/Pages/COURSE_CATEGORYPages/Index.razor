@@ -14,7 +14,7 @@
     <a href="course_categories/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.COURSE_CATEGORY">
+<QuickGrid Class="table" Items="Categories">
     <PropertyColumn Property="course_category => course_category.course_category_name" />
     <PropertyColumn Property="course_category => course_category.description" />
 
@@ -27,6 +27,14 @@
 
 @code {
     private DanceAcademyContext context = default!;
+    private IQueryable<COURSE_CATEGORY> Categories => 
+        context.COURSE_CATEGORY.Select(c => new COURSE_CATEGORY 
+        { 
+            ID = c.ID, 
+            course_category_name = c.course_category_name, 
+            description = c.description 
+            
+        });
 
     protected override void OnInitialized()
     {

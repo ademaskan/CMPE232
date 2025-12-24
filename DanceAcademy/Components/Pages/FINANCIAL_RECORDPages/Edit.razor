@@ -1,4 +1,5 @@
 ﻿@page "/financial_records/edit"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -18,7 +19,7 @@ else
 {
     <div class="row">
         <div class="col-md-4">
-            <EditForm method="post" Model="FINANCIAL_RECORD" OnValidSubmit="UpdateFINANCIAL_RECORD" FormName="edit" Enhance>
+            <EditForm Model="FINANCIAL_RECORD" OnValidSubmit="UpdateFINANCIAL_RECORD">
                 <DataAnnotationsValidator />
                 <ValidationSummary role="alert"/>
                 <input type="hidden" name="FINANCIAL_RECORD.ID" value="@FINANCIAL_RECORD.ID" />
@@ -66,13 +67,24 @@ else
     [SupplyParameterFromQuery]
     private int ID { get; set; }
 
-    [SupplyParameterFromForm]
     private FINANCIAL_RECORD? FINANCIAL_RECORD { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        FINANCIAL_RECORD ??= await context.FINANCIAL_RECORD.FirstOrDefaultAsync(m => m.ID == ID);
+        FINANCIAL_RECORD = await context.FINANCIAL_RECORD
+            .Where(fr => fr.ID == ID)
+            .Select(fr => new FINANCIAL_RECORD
+            {
+                ID = fr.ID,
+                BRANCHID = fr.BRANCHID,
+                MEMBERID = fr.MEMBERID,
+                amount = fr.amount,
+                payment_date = fr.payment_date,
+                payment_method = fr.payment_method,
+                transaction_type = fr.transaction_type
+            })
+            .FirstOrDefaultAsync();
 
         if (FINANCIAL_RECORD is null)
         {

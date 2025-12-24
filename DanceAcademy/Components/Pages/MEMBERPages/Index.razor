@@ -14,7 +14,7 @@
     <a href="members/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.MEMBER">
+<QuickGrid Class="table" Items="Members">
     <PropertyColumn Property="member => member.member_first_name" />
     <PropertyColumn Property="member => member.member_last_name" />
     <PropertyColumn Property="member => member.member_email" />
@@ -33,6 +33,21 @@
 
 @code {
     private DanceAcademyContext context = default!;
+    
+    private IQueryable<MEMBER> Members => 
+        context.MEMBER.Select(m => new MEMBER 
+        { 
+            ID = m.ID, 
+            member_first_name = m.member_first_name, 
+            member_last_name = m.member_last_name,
+            member_email = m.member_email,
+            member_phone_number = m.member_phone_number,
+            member_address = m.member_address,
+            date_of_birth = m.date_of_birth,
+            member_gender = m.member_gender,
+            member_join_date = m.member_join_date
+            // Navigation properties COURSE_ENROLLMENT, FINANCIAL_RECORD, MEMBERSHIPs are intentionally excluded
+        });
 
     protected override void OnInitialized()
     {

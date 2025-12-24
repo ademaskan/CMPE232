@@ -1,4 +1,5 @@
 ﻿@page "/financial_records"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using DataAccess
@@ -14,7 +15,7 @@
     <a href="financial_records/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.FINANCIAL_RECORD">
+<QuickGrid Class="table" Items="FinancialRecords">
     <PropertyColumn Property="financial_record => financial_record.BRANCHID" />
     <PropertyColumn Property="financial_record => financial_record.MEMBERID" />
     <PropertyColumn Property="financial_record => financial_record.amount" />
@@ -31,6 +32,18 @@
 
 @code {
     private DanceAcademyContext context = default!;
+
+    private IQueryable<FINANCIAL_RECORD> FinancialRecords => 
+        context.FINANCIAL_RECORD.Select(fr => new FINANCIAL_RECORD 
+        { 
+            ID = fr.ID, 
+            BRANCHID = fr.BRANCHID, 
+            MEMBERID = fr.MEMBERID,
+            amount = fr.amount,
+            payment_date = fr.payment_date,
+            payment_method = fr.payment_method,
+            transaction_type = fr.transaction_type
+        });
 
     protected override void OnInitialized()
     {

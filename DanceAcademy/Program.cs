@@ -2,11 +2,25 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using DanceAcademy.Data;
+using Radzen;
+using System.Text.Json.Serialization;
 //using DanceAcademy.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{ options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles; 
+}
+);
+// Configure JSON to handle circular references
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddDbContextFactory<DanceAcademyContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DanceAcademyContext") ?? throw new InvalidOperationException("Connection string 'DanceAcademyContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DanceAcademyContext") ?? throw new InvalidOperationException("Connection string 'DanceAcademyContext' not found."))
+    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 //builder.Services.AddDbContextFactory<DanceAcademyContext>(options =>
 //    options.UseSqlServer(builder.Configuration.GetConnectionString("DanceAcademyContext") ?? throw new InvalidOperationException("Connection string 'DanceAcademyContext' not found.")));
 
@@ -14,9 +28,20 @@ builder.Services.AddQuickGridEntityFrameworkAdapter();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Add Radzen services
+builder.Services.AddRadzenComponents();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Configure SignalR JSON for Blazor Server to handle circular references
+builder.Services.AddSignalR()
+    .AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.PayloadSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 var app = builder.Build();
 

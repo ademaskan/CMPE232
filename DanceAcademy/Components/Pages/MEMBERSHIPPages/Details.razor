@@ -1,4 +1,5 @@
 ﻿@page "/memberships/details"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -46,7 +47,19 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        membership = await context.MEMBERSHIP.FirstOrDefaultAsync(m => m.ID == ID);
+        membership = await context.MEMBERSHIP
+            .Where(ms => ms.ID == ID)
+            .Select(ms => new MEMBERSHIP
+            {
+                ID = ms.ID,
+                MEMBERID = ms.MEMBERID,
+                BRANCHID = ms.BRANCHID,
+                membership_type = ms.membership_type,
+                start_date = ms.start_date,
+                end_date = ms.end_date,
+                fee_amount = ms.fee_amount
+            })
+            .FirstOrDefaultAsync();
 
         if (membership is null)
         {

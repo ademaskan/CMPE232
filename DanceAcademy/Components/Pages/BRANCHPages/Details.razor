@@ -1,4 +1,5 @@
 ﻿@page "/branches/details"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -46,7 +47,19 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        branch = await context.BRANCH.FirstOrDefaultAsync(m => m.ID == ID);
+        branch = await context.BRANCH
+            .Where(b => b.ID == ID)
+            .Select(b => new BRANCH
+            {
+                ID = b.ID,
+                branch_name = b.branch_name,
+                branch_city = b.branch_city,
+                branch_address = b.branch_address,
+                branch_district = b.branch_district,
+                branch_contact_number = b.branch_contact_number,
+                branch_capacity = b.branch_capacity
+            })
+            .FirstOrDefaultAsync();
 
         if (branch is null)
         {

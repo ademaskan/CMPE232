@@ -1,4 +1,5 @@
 ﻿@page "/branch_performances/details"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -46,7 +47,19 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        branch_performance = await context.BRANCH_PERFORMANCE.FirstOrDefaultAsync(m => m.ID == ID);
+        branch_performance = await context.BRANCH_PERFORMANCE
+            .Where(bp => bp.ID == ID)
+            .Select(bp => new BRANCH_PERFORMANCE
+            {
+                ID = bp.ID,
+                BRANCHID = bp.BRANCHID,
+                month = bp.month,
+                year = bp.year,
+                revenue = bp.revenue,
+                expenses = bp.expenses,
+                net_profit = bp.net_profit
+            })
+            .FirstOrDefaultAsync();
 
         if (branch_performance is null)
         {

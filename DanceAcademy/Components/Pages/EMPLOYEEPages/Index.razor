@@ -1,4 +1,5 @@
 ﻿@page "/employees"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using DataAccess
@@ -14,7 +15,7 @@
     <a href="employees/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.EMPLOYEE">
+<QuickGrid Class="table" Items="Employees">
     <PropertyColumn Property="employee => employee.employee_first_name" />
     <PropertyColumn Property="employee => employee.employee_last_name" />
     <PropertyColumn Property="employee => employee.position" />
@@ -31,6 +32,18 @@
 
 @code {
     private DanceAcademyContext context = default!;
+
+    private IQueryable<EMPLOYEE> Employees => 
+        context.EMPLOYEE.Select(e => new EMPLOYEE 
+        { 
+            ID = e.ID, 
+            employee_first_name = e.employee_first_name, 
+            employee_last_name = e.employee_last_name,
+            position = e.position,
+            hire_date = e.hire_date,
+            salary = e.salary,
+            BRANCHID = e.BRANCHID
+        });
 
     protected override void OnInitialized()
     {

@@ -1,4 +1,5 @@
 ﻿@page "/course_enrollments/details"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -40,7 +41,16 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        course_enrollment = await context.COURSE_ENROLLMENT.FirstOrDefaultAsync(m => m.ID == ID);
+        course_enrollment = await context.COURSE_ENROLLMENT
+            .Where(ce => ce.ID == ID)
+            .Select(ce => new COURSE_ENROLLMENT
+            {
+                ID = ce.ID,
+                MEMBERID = ce.MEMBERID,
+                COURSE_CATEGORYID = ce.COURSE_CATEGORYID,
+                enrollment_date = ce.enrollment_date
+            })
+            .FirstOrDefaultAsync();
 
         if (course_enrollment is null)
         {

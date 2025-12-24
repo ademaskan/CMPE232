@@ -1,4 +1,5 @@
 ﻿@page "/branches"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using DataAccess
@@ -14,7 +15,7 @@
     <a href="branches/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.BRANCH">
+<QuickGrid Class="table" Items="Branches">
     <PropertyColumn Property="branch => branch.branch_name" />
     <PropertyColumn Property="branch => branch.branch_city" />
     <PropertyColumn Property="branch => branch.branch_address" />
@@ -31,6 +32,18 @@
 
 @code {
     private DanceAcademyContext context = default!;
+
+    private IQueryable<BRANCH> Branches => 
+        context.BRANCH.Select(b => new BRANCH 
+        { 
+            ID = b.ID, 
+            branch_name = b.branch_name, 
+            branch_city = b.branch_city,
+            branch_address = b.branch_address,
+            branch_district = b.branch_district,
+            branch_contact_number = b.branch_contact_number,
+            branch_capacity = b.branch_capacity
+        });
 
     protected override void OnInitialized()
     {

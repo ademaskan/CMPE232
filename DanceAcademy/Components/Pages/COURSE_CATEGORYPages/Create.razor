@@ -1,28 +1,30 @@
 ﻿@page "/course_categories/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+
+<PageTitle>Create Course Category</PageTitle>
 
 <h1>Create</h1>
 
-<h2>COURSE_CATEGORY</h2>
+<h2>Course Category</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm method="post" Model="COURSE_CATEGORY" OnValidSubmit="AddCOURSE_CATEGORY" FormName="create" Enhance>
+        <EditForm Model="COURSE_CATEGORY" OnValidSubmit="AddCOURSE_CATEGORY">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
-                <label for="course_category_name" class="form-label">course_category_name:</label> 
+                <label for="course_category_name" class="form-label">Category Name:</label> 
                 <InputText id="course_category_name" @bind-Value="COURSE_CATEGORY.course_category_name" class="form-control" /> 
                 <ValidationMessage For="() => COURSE_CATEGORY.course_category_name" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="description" class="form-label">description:</label> 
-                <InputText id="description" @bind-Value="COURSE_CATEGORY.description" class="form-control" /> 
+                <label for="description" class="form-label">Description:</label> 
+                <InputTextArea id="description" @bind-Value="COURSE_CATEGORY.description" class="form-control" rows="4" /> 
                 <ValidationMessage For="() => COURSE_CATEGORY.description" class="text-danger" /> 
             </div>        
             <button type="submit" class="btn btn-primary">Create</button>
@@ -35,12 +37,15 @@
 </div>
 
 @code {
-    [SupplyParameterFromForm]
     private COURSE_CATEGORY COURSE_CATEGORY { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddCOURSE_CATEGORY()
     {
+        Console.WriteLine("********************************************************************************");
+        Console.WriteLine("Course Category Name: " + COURSE_CATEGORY.course_category_name);
+        Console.WriteLine("Description: " + COURSE_CATEGORY.description);
+        Console.WriteLine("********************************************************************************");
+       
         using var context = DbFactory.CreateDbContext();
         context.COURSE_CATEGORY.Add(COURSE_CATEGORY);
         await context.SaveChangesAsync();

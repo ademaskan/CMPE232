@@ -1,4 +1,5 @@
 ﻿@page "/course_categories/edit"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -18,7 +19,7 @@ else
 {
     <div class="row">
         <div class="col-md-4">
-            <EditForm method="post" Model="COURSE_CATEGORY" OnValidSubmit="UpdateCOURSE_CATEGORY" FormName="edit" Enhance>
+            <EditForm Model="COURSE_CATEGORY" OnValidSubmit="UpdateCOURSE_CATEGORY">
                 <DataAnnotationsValidator />
                 <ValidationSummary role="alert"/>
                 <input type="hidden" name="COURSE_CATEGORY.ID" value="@COURSE_CATEGORY.ID" />
@@ -46,13 +47,20 @@ else
     [SupplyParameterFromQuery]
     private int ID { get; set; }
 
-    [SupplyParameterFromForm]
     private COURSE_CATEGORY? COURSE_CATEGORY { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        COURSE_CATEGORY ??= await context.COURSE_CATEGORY.FirstOrDefaultAsync(m => m.ID == ID);
+        COURSE_CATEGORY = await context.COURSE_CATEGORY
+            .Where(c => c.ID == ID)
+            .Select(c => new COURSE_CATEGORY
+            {
+                ID = c.ID,
+                course_category_name = c.course_category_name,
+                description = c.description
+            })
+            .FirstOrDefaultAsync();
 
         if (COURSE_CATEGORY is null)
         {

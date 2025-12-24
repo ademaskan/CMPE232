@@ -1,4 +1,5 @@
 ﻿@page "/financial_records/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -12,7 +13,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm method="post" Model="FINANCIAL_RECORD" OnValidSubmit="AddFINANCIAL_RECORD" FormName="create" Enhance>
+        <EditForm Model="FINANCIAL_RECORD" OnValidSubmit="AddFINANCIAL_RECORD">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
@@ -55,10 +56,8 @@
 </div>
 
 @code {
-    [SupplyParameterFromForm]
     private FINANCIAL_RECORD FINANCIAL_RECORD { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddFINANCIAL_RECORD()
     {
         using var context = DbFactory.CreateDbContext();

@@ -258,10 +258,11 @@ C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\staticwebassets
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\DanceAca.4860A86C.Up2Date
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\DanceAcademy.dll
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\refint\DanceAcademy.dll
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\DanceAcademy.pdb
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\DanceAcademy.genruntimeconfig.cache
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\ref\DanceAcademy.dll
+C:\Users\adem\source\repos\CMPE232\DanceAcademy\bin\Debug\net8.0\Radzen.Blazor.dll
+C:\Users\adem\source\repos\CMPE232\DanceAcademy\bin\Debug\net8.0\System.Linq.Dynamic.Core.dll

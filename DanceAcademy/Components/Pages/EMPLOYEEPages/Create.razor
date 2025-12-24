@@ -1,4 +1,5 @@
 ﻿@page "/employees/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -12,7 +13,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm method="post" Model="EMPLOYEE" OnValidSubmit="AddEMPLOYEE" FormName="create" Enhance>
+        <EditForm Model="EMPLOYEE" OnValidSubmit="AddEMPLOYEE">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
@@ -55,10 +56,8 @@
 </div>
 
 @code {
-    [SupplyParameterFromForm]
     private EMPLOYEE EMPLOYEE { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddEMPLOYEE()
     {
         using var context = DbFactory.CreateDbContext();

@@ -1,6 +1,8 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">DanceAcademy</a>
+        <a class="navbar-brand" href="">
+            <span class="brand-icon"></span> Dance Academy
+        </a>
     </div>
 </div>
 
@@ -8,23 +10,71 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
+        <!-- Dashboard -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="nav-icon"></span> Dashboard
             </NavLink>
         </div>
 
+        <!-- Members Section -->
+        <div class="nav-section-header px-3">
+            <span>Members</span>
+        </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            <NavLink class="nav-link" href="members">
+                <span class="nav-icon"></span> Members
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="memberships">
+                <span class="nav-icon"></span> Memberships
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="course_enrollments">
+                <span class="nav-icon"></span> Enrollments
             </NavLink>
         </div>
 
+        <!-- Branches Section -->
+        <div class="nav-section-header px-3">
+            <span>Branches</span>
+        </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            <NavLink class="nav-link" href="branches">
+                <span class="nav-icon"></span> Branches
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="branch_performances">
+                <span class="nav-icon"></span> Performance
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="employees">
+                <span class="nav-icon">👨</span> Employees
+            </NavLink>
+        </div>
+
+        <!-- Courses Section -->
+        <div class="nav-section-header px-3">
+            <span>Courses</span>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="course_categories">
+                <span class="nav-icon"></span> Categories
+            </NavLink>
+        </div>
+
+        <!-- Finance Section -->
+        <div class="nav-section-header px-3">
+            <span>Finance</span>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="financial_records">
+                <span class="nav-icon"></span> Records
             </NavLink>
         </div>
     </nav>
 </div>
-

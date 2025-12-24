@@ -1,4 +1,5 @@
 ﻿@page "/course_categories/delete"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -25,7 +26,7 @@
             <dt class="col-sm-2">description</dt>
             <dd class="col-sm-10">@course_category.description</dd>
         </dl>
-        <EditForm method="post" Model="course_category" OnValidSubmit="DeleteCOURSE_CATEGORY" FormName="delete" Enhance>
+        <EditForm Model="course_category" OnValidSubmit="DeleteCOURSE_CATEGORY">
             <button type="submit" class="btn btn-danger" disabled="@(course_category is null)">Delete</button> |
             <a href="/course_categories">Back to List</a>
         </EditForm>
@@ -41,7 +42,15 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        course_category = await context.COURSE_CATEGORY.FirstOrDefaultAsync(m => m.ID == ID);
+        course_category = await context.COURSE_CATEGORY
+            .Where(c => c.ID == ID)
+            .Select(c => new COURSE_CATEGORY
+            {
+                ID = c.ID,
+                course_category_name = c.course_category_name,
+                description = c.description
+            })
+            .FirstOrDefaultAsync();
 
         if (course_category is null)
         {

@@ -1,4 +1,5 @@
 ﻿@page "/branches/edit"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -18,7 +19,7 @@ else
 {
     <div class="row">
         <div class="col-md-4">
-            <EditForm method="post" Model="BRANCH" OnValidSubmit="UpdateBRANCH" FormName="edit" Enhance>
+            <EditForm Model="BRANCH" OnValidSubmit="UpdateBRANCH">
                 <DataAnnotationsValidator />
                 <ValidationSummary role="alert"/>
                 <input type="hidden" name="BRANCH.ID" value="@BRANCH.ID" />
@@ -66,13 +67,24 @@ else
     [SupplyParameterFromQuery]
     private int ID { get; set; }
 
-    [SupplyParameterFromForm]
     private BRANCH? BRANCH { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        BRANCH ??= await context.BRANCH.FirstOrDefaultAsync(m => m.ID == ID);
+        BRANCH = await context.BRANCH
+            .Where(b => b.ID == ID)
+            .Select(b => new BRANCH
+            {
+                ID = b.ID,
+                branch_name = b.branch_name,
+                branch_city = b.branch_city,
+                branch_address = b.branch_address,
+                branch_district = b.branch_district,
+                branch_contact_number = b.branch_contact_number,
+                branch_capacity = b.branch_capacity
+            })
+            .FirstOrDefaultAsync();
 
         if (BRANCH is null)
         {

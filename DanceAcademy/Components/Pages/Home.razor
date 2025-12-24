@@ -1,7 +1,457 @@
 ﻿@page "/"
+@using Microsoft.EntityFrameworkCore
+@using DanceAcademy.Data
+@using DataAccess
+@inject IDbContextFactory<DanceAcademyContext> DbFactory
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Dashboard - Dance Academy</PageTitle>
 
-<h1>Hello, world!</h1>
+<style>
+    :root {
+        --dashboard-bg: #f8fafc;
+        --card-bg: #ffffff;
+        --accent-coral: #e63946;
+        --accent-teal: #0d9488;
+        --accent-gold: #d97706;
+        --accent-violet: #7c3aed;
+        --accent-blue: #2563eb;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --border-subtle: #e2e8f0;
+    }
 
-Welcome to your new app.
+    .dashboard-container {
+        background: var(--dashboard-bg);
+        min-height: 100vh;
+        padding: 2rem;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .dashboard-header {
+        margin-bottom: 2.5rem;
+    }
+
+    .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid var(--border-subtle);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+    }
+
+    .stat-card.coral::before { background: var(--accent-coral); }
+    .stat-card.teal::before { background: var(--accent-teal); }
+    .stat-card.gold::before { background: var(--accent-gold); }
+    .stat-card.violet::before { background: var(--accent-violet); }
+    .stat-card.blue::before { background: var(--accent-blue); }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon.coral { background: rgba(230,57,70,0.1); color: var(--accent-coral); }
+    .stat-icon.teal { background: rgba(13,148,136,0.1); color: var(--accent-teal); }
+    .stat-icon.gold { background: rgba(217,119,6,0.1); color: var(--accent-gold); }
+    .stat-icon.violet { background: rgba(124,58,237,0.1); color: var(--accent-violet); }
+    .stat-icon.blue { background: rgba(37,99,235,0.1); color: var(--accent-blue); }
+
+    .stat-value {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .chart-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid var(--border-subtle);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .chart-title {
+        color: var(--text-primary);
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .chart-title-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .loading-state {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        color: var(--text-secondary);
+    }
+
+    /* Radzen chart legend text fix */
+    .chart-card ::deep .rz-legend-text {
+        fill: var(--text-primary) !important;
+    }
+    
+    .chart-card ::deep .rz-axis-title,
+    .chart-card ::deep .rz-tick-text {
+        fill: var(--text-secondary) !important;
+    }
+
+    @@media (max-width: 768px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+        .dashboard-container {
+            padding: 1rem;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Dance Academy Dashboard</h1>
+        <p class="dashboard-subtitle">Overview of your dance academy operations and performance metrics</p>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="loading-state">
+            <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" Size="ProgressBarCircularSize.Large" />
+        </div>
+    }
+    else
+    {
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card coral">
+                <div class="stat-icon coral">👥</div>
+                <div class="stat-value">@totalMembers</div>
+                <div class="stat-label">Total Members</div>
+            </div>
+            <div class="stat-card teal">
+                <div class="stat-icon teal">🏢</div>
+                <div class="stat-value">@totalBranches</div>
+                <div class="stat-label">Branches</div>
+            </div>
+            <div class="stat-card gold">
+                <div class="stat-icon gold">👨‍💼</div>
+                <div class="stat-value">@totalEmployees</div>
+                <div class="stat-label">Employees</div>
+            </div>
+            <div class="stat-card violet">
+                <div class="stat-icon violet">📚</div>
+                <div class="stat-value">@totalEnrollments</div>
+                <div class="stat-label">Enrollments</div>
+            </div>
+            <div class="stat-card blue">
+                <div class="stat-icon blue">💰</div>
+                <div class="stat-value">@totalRevenue.ToString("C0")</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Members by Gender -->
+            <div class="chart-card">
+                <div class="chart-title">
+                    <span class="chart-title-dot" style="background: var(--accent-coral);"></span>
+                    Members by Gender
+                </div>
+                @if (genderData.Any())
+                {
+                    <RadzenChart>
+                        <RadzenPieSeries Data="@genderData" Title="Gender" CategoryProperty="Category" ValueProperty="Count">
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </RadzenPieSeries>
+                    </RadzenChart>
+                }
+                else
+                {
+                    <div class="loading-state">No data available</div>
+                }
+            </div>
+
+            <!-- Enrollments by Course Category -->
+            <div class="chart-card">
+                <div class="chart-title">
+                    <span class="chart-title-dot" style="background: var(--accent-teal);"></span>
+                    Enrollments by Course Category
+                </div>
+                @if (enrollmentByCategoryData.Any())
+                {
+                    <RadzenChart>
+                        <RadzenDonutSeries Data="@enrollmentByCategoryData" Title="Category" CategoryProperty="Category" ValueProperty="Count">
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </RadzenDonutSeries>
+                    </RadzenChart>
+                }
+                else
+                {
+                    <div class="loading-state">No data available</div>
+                }
+            </div>
+
+            <!-- Revenue vs Expenses by Branch -->
+            <div class="chart-card">
+                <div class="chart-title">
+                    <span class="chart-title-dot" style="background: var(--accent-gold);"></span>
+                    Revenue vs Expenses by Branch
+                </div>
+                @if (branchPerformanceData.Any())
+                {
+                    <RadzenChart>
+                        <RadzenCategoryAxis>
+                            <RadzenAxisTitle Text="Branch" />
+                        </RadzenCategoryAxis>
+                        <RadzenValueAxis>
+                            <RadzenAxisTitle Text="Amount" />
+                        </RadzenValueAxis>
+                        <RadzenBarSeries Data="@branchPerformanceData" CategoryProperty="Category" ValueProperty="Revenue" Title="Revenue" />
+                        <RadzenBarSeries Data="@branchPerformanceData" CategoryProperty="Category" ValueProperty="Expenses" Title="Expenses" />
+                    </RadzenChart>
+                }
+                else
+                {
+                    <div class="loading-state">No data available</div>
+                }
+            </div>
+
+            <!-- Memberships by Type -->
+            <div class="chart-card">
+                <div class="chart-title">
+                    <span class="chart-title-dot" style="background: var(--accent-violet);"></span>
+                    Memberships by Type
+                </div>
+                @if (membershipTypeData.Any())
+                {
+                    <RadzenChart>
+                        <RadzenDonutSeries Data="@membershipTypeData" Title="Type" CategoryProperty="Category" ValueProperty="Count" Radius="120" InnerRadius="80">
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </RadzenDonutSeries>
+                    </RadzenChart>
+                }
+                else
+                {
+                    <div class="loading-state">No data available</div>
+                }
+            </div>
+
+            <!-- Financial Transactions by Payment Method -->
+            <div class="chart-card">
+                <div class="chart-title">
+                    <span class="chart-title-dot" style="background: var(--accent-blue);"></span>
+                    Transactions by Payment Method
+                </div>
+                @if (paymentMethodData.Any())
+                {
+                    <RadzenChart>
+                        <RadzenPieSeries Data="@paymentMethodData" Title="Method" CategoryProperty="Category" ValueProperty="Count">
+                            <RadzenSeriesDataLabels Visible="true" />
+                        </RadzenPieSeries>
+                    </RadzenChart>
+                }
+                else
+                {
+                    <div class="loading-state">No data available</div>
+                }
+            </div>
+
+            <!-- Employees by Branch -->
+            <div class="chart-card">
+                <div class="chart-title">
+                    <span class="chart-title-dot" style="background: var(--accent-coral);"></span>
+                    Employees by Branch
+                </div>
+                @if (employeesByBranchData.Any())
+                {
+                    <RadzenChart>
+                        <RadzenCategoryAxis>
+                            <RadzenAxisTitle Text="Branch" />
+                        </RadzenCategoryAxis>
+                        <RadzenValueAxis>
+                            <RadzenAxisTitle Text="Employees" />
+                        </RadzenValueAxis>
+                        <RadzenColumnSeries Data="@employeesByBranchData" CategoryProperty="Category" ValueProperty="Count" Title="Employees" />
+                    </RadzenChart>
+                }
+                else
+                {
+                    <div class="loading-state">No data available</div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool isLoading = true;
+    
+    // Summary stats
+    private int totalMembers;
+    private int totalBranches;
+    private int totalEmployees;
+    private int totalEnrollments;
+    private decimal totalRevenue;
+
+    // Chart data
+    private List<ChartDataItem> genderData = new();
+    private List<ChartDataItem> enrollmentByCategoryData = new();
+    private List<BranchPerformanceItem> branchPerformanceData = new();
+    private List<ChartDataItem> membershipTypeData = new();
+    private List<ChartDataItem> paymentMethodData = new();
+    private List<ChartDataItem> employeesByBranchData = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDashboardData();
+    }
+
+    private async Task LoadDashboardData()
+    {
+        try
+        {
+            using var context = DbFactory.CreateDbContext();
+
+            // Load summary stats
+            totalMembers = await context.MEMBER.CountAsync();
+            totalBranches = await context.BRANCH.CountAsync();
+            totalEmployees = await context.EMPLOYEE.CountAsync();
+            totalEnrollments = await context.COURSE_ENROLLMENT.CountAsync();
+            totalRevenue = await context.FINANCIAL_RECORD
+                .Where(f => f.transaction_type == "Income" || f.transaction_type == "Payment")
+                .SumAsync(f => f.amount);
+
+            // Members by Gender
+            genderData = await context.MEMBER
+                .GroupBy(m => m.member_gender)
+                .Select(g => new ChartDataItem { Category = g.Key ?? "Unknown", Count = g.Count() })
+                .ToListAsync();
+
+            // Enrollments by Course Category
+            enrollmentByCategoryData = await context.COURSE_ENROLLMENT
+                .Include(e => e.COURSE_CATEGORY)
+                .GroupBy(e => e.COURSE_CATEGORY.course_category_name)
+                .Select(g => new ChartDataItem { Category = g.Key ?? "Unknown", Count = g.Count() })
+                .ToListAsync();
+
+            // Revenue vs Expenses by Branch
+            branchPerformanceData = await context.BRANCH_PERFORMANCE
+                .Include(bp => bp.BRANCH)
+                .GroupBy(bp => bp.BRANCH.branch_name)
+                .Select(g => new BranchPerformanceItem 
+                { 
+                    Category = g.Key ?? "Unknown", 
+                    Revenue = g.Sum(x => x.revenue),
+                    Expenses = g.Sum(x => x.expenses)
+                })
+                .ToListAsync();
+
+            // Memberships by Type
+            membershipTypeData = await context.MEMBERSHIP
+                .GroupBy(m => m.membership_type)
+                .Select(g => new ChartDataItem { Category = g.Key ?? "Unknown", Count = g.Count() })
+                .ToListAsync();
+
+            // Financial Transactions by Payment Method
+            paymentMethodData = await context.FINANCIAL_RECORD
+                .GroupBy(f => f.payment_method)
+                .Select(g => new ChartDataItem { Category = g.Key ?? "Unknown", Count = g.Count() })
+                .ToListAsync();
+
+            // Employees by Branch
+            employeesByBranchData = await context.EMPLOYEE
+                .Include(e => e.BRANCH)
+                .Where(e => e.BRANCH != null)
+                .GroupBy(e => e.BRANCH!.branch_name)
+                .Select(g => new ChartDataItem { Category = g.Key ?? "Unknown", Count = g.Count() })
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading dashboard data: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    public class ChartDataItem
+    {
+        public string Category { get; set; } = "";
+        public int Count { get; set; }
+    }
+
+    public class BranchPerformanceItem
+    {
+        public string Category { get; set; } = "";
+        public decimal Revenue { get; set; }
+        public decimal Expenses { get; set; }
+    }
+}

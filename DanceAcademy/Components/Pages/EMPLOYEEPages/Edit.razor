@@ -1,4 +1,5 @@
 ﻿@page "/employees/edit"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -18,7 +19,7 @@ else
 {
     <div class="row">
         <div class="col-md-4">
-            <EditForm method="post" Model="EMPLOYEE" OnValidSubmit="UpdateEMPLOYEE" FormName="edit" Enhance>
+            <EditForm Model="EMPLOYEE" OnValidSubmit="UpdateEMPLOYEE">
                 <DataAnnotationsValidator />
                 <ValidationSummary role="alert"/>
                 <input type="hidden" name="EMPLOYEE.ID" value="@EMPLOYEE.ID" />
@@ -66,13 +67,24 @@ else
     [SupplyParameterFromQuery]
     private int ID { get; set; }
 
-    [SupplyParameterFromForm]
     private EMPLOYEE? EMPLOYEE { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        EMPLOYEE ??= await context.EMPLOYEE.FirstOrDefaultAsync(m => m.ID == ID);
+        EMPLOYEE = await context.EMPLOYEE
+            .Where(e => e.ID == ID)
+            .Select(e => new EMPLOYEE
+            {
+                ID = e.ID,
+                employee_first_name = e.employee_first_name,
+                employee_last_name = e.employee_last_name,
+                position = e.position,
+                hire_date = e.hire_date,
+                salary = e.salary,
+                BRANCHID = e.BRANCHID
+            })
+            .FirstOrDefaultAsync();
 
         if (EMPLOYEE is null)
         {

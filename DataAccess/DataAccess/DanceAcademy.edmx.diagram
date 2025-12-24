@@ -7,7 +7,7 @@
       <Diagram DiagramId="d93240c37d27497f8ca31fa2151957af" Name="Diagram1" ZoomLevel="74">
         <EntityTypeShape EntityType="CMPE232Model.BRANCH" Width="1.5" PointX="0.75" PointY="6.375" />
         <EntityTypeShape EntityType="CMPE232Model.BRANCH_PERFORMANCE" Width="1.5" PointX="3" PointY="15.25" />
-        <EntityTypeShape EntityType="CMPE232Model.COURSE_CATEGORY" Width="1.5" PointX="0.75" PointY="12" />
+        <EntityTypeShape EntityType="CMPE232Model.COURSE_CATEGORY" Width="1.5" PointX="2" PointY="12.375" />
         <EntityTypeShape EntityType="CMPE232Model.COURSE_ENROLLMENT" Width="1.5" PointX="3" PointY="0.875" />
         <EntityTypeShape EntityType="CMPE232Model.EMPLOYEE" Width="1.5" PointX="3" PointY="8.5" />
         <EntityTypeShape EntityType="CMPE232Model.FINANCIAL_RECORD" Width="1.5" PointX="6" PointY="6.5" />

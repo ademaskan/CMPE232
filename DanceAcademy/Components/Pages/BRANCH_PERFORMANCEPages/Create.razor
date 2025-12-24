@@ -1,4 +1,5 @@
 ﻿@page "/branch_performances/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -12,7 +13,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm method="post" Model="BRANCH_PERFORMANCE" OnValidSubmit="AddBRANCH_PERFORMANCE" FormName="create" Enhance>
+        <EditForm Model="BRANCH_PERFORMANCE" OnValidSubmit="AddBRANCH_PERFORMANCE">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
@@ -55,10 +56,8 @@
 </div>
 
 @code {
-    [SupplyParameterFromForm]
     private BRANCH_PERFORMANCE BRANCH_PERFORMANCE { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddBRANCH_PERFORMANCE()
     {
         using var context = DbFactory.CreateDbContext();

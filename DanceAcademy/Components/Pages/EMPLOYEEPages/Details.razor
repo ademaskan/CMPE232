@@ -1,4 +1,5 @@
 ﻿@page "/employees/details"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -46,7 +47,19 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        employee = await context.EMPLOYEE.FirstOrDefaultAsync(m => m.ID == ID);
+        employee = await context.EMPLOYEE
+            .Where(e => e.ID == ID)
+            .Select(e => new EMPLOYEE
+            {
+                ID = e.ID,
+                employee_first_name = e.employee_first_name,
+                employee_last_name = e.employee_last_name,
+                position = e.position,
+                hire_date = e.hire_date,
+                salary = e.salary,
+                BRANCHID = e.BRANCHID
+            })
+            .FirstOrDefaultAsync();
 
         if (employee is null)
         {

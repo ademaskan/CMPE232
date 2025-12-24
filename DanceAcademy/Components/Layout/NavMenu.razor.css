@@ -22,6 +22,35 @@
 
 .navbar-brand {
     font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-icon {
+    font-size: 1.3rem;
+}
+
+.nav-icon {
+    margin-right: 0.75rem;
+    font-size: 1rem;
+}
+
+.nav-section-header {
+    color: #888;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 0.5rem;
+}
+
+.nav-section-header:first-of-type {
+    border-top: none;
+    margin-top: 0;
 }
 
 .bi {

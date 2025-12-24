@@ -13,7 +13,8 @@
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "8.0.22",
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.22",
           "Microsoft.EntityFrameworkCore.Tools": "8.0.22",
-          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "8.0.22"
+          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "8.0.22",
+          "Radzen.Blazor": "5.9.9"
         },
         "runtime": {
           "DanceAcademy.dll": {}
@@ -54,6 +55,7 @@
           }
         }
       },
+      "DartSassBuilder/1.1.0": {},
       "Humanizer/2.14.1": {
         "dependencies": {
           "Humanizer.Core.af": "2.14.1",
@@ -1723,6 +1725,20 @@
           }
         }
       },
+      "Radzen.Blazor/5.9.9": {
+        "dependencies": {
+          "DartSassBuilder": "1.1.0",
+          "Microsoft.AspNetCore.Components": "8.0.22",
+          "Microsoft.AspNetCore.Components.Web": "8.0.22",
+          "System.Linq.Dynamic.Core": "1.6.0.1"
+        },
+        "runtime": {
+          "lib/net8.0/Radzen.Blazor.dll": {
+            "assemblyVersion": "5.9.9.0",
+            "fileVersion": "5.9.9.0"
+          }
+        }
+      },
       "System.ClientModel/1.0.0": {
         "dependencies": {
           "System.Memory.Data": "1.0.2",
@@ -1837,6 +1853,14 @@
         }
       },
       "System.IO.Pipelines/8.0.0": {},
+      "System.Linq.Dynamic.Core/1.6.0.1": {
+        "runtime": {
+          "lib/net8.0/System.Linq.Dynamic.Core.dll": {
+            "assemblyVersion": "1.6.0.1",
+            "fileVersion": "1.6.0.1"
+          }
+        }
+      },
       "System.Memory/4.5.4": {},
       "System.Memory.Data/1.0.2": {
         "dependencies": {
@@ -1970,6 +1994,13 @@
       "sha512": "sha512-Sf4BoE6Q3jTgFkgBkx7qztYOFELBCo+wQgpYDwal/qJ1unBH73ywPztIJKXBXORRzAeNijsuxhk94h0TIMvfYg==",
       "path": "azure.identity/1.11.4",
       "hashPath": "azure.identity.1.11.4.nupkg.sha512"
+    },
+    "DartSassBuilder/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3UKGIRom67Ka/49osw4gBoCGSL3kdEjJ6yFL1rBPkQICMe9LqNoF64xpVnVYo4nA4zfpB20fHF0oJYWPKUJbAQ==",
+      "path": "dartsassbuilder/1.1.0",
+      "hashPath": "dartsassbuilder.1.1.0.nupkg.sha512"
     },
     "Humanizer/2.14.1": {
       "type": "package",
@@ -2860,6 +2891,13 @@
       "path": "nuget.versioning/6.11.0",
       "hashPath": "nuget.versioning.6.11.0.nupkg.sha512"
     },
+    "Radzen.Blazor/5.9.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-51o7iNW5lDcFUZEjh04bb458KfQgBXwDa2HBIerI3fhQhWdWYmT99Zs/TnhzQ6CH8e+Ek3UrKTSAON3JuTMsaw==",
+      "path": "radzen.blazor/5.9.9",
+      "hashPath": "radzen.blazor.5.9.9.nupkg.sha512"
+    },
     "System.ClientModel/1.0.0": {
       "type": "package",
       "serviceable": true,
@@ -2971,6 +3009,13 @@
       "sha512": "sha512-FHNOatmUq0sqJOkTx+UF/9YK1f180cnW5FVqnQMvYUN0elp6wFzbtPSiqbo1/ru8ICp43JM1i7kKkk6GsNGHlA==",
       "path": "system.io.pipelines/8.0.0",
       "hashPath": "system.io.pipelines.8.0.0.nupkg.sha512"
+    },
+    "System.Linq.Dynamic.Core/1.6.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-u1ome4HL3OS5lq2QbxIAmHv+i5uewSf2hqosGr8O5FjkseqSx4Fmt1Pn+8fjyex7/rQOOYrXk+iTkxxEgSc9yA==",
+      "path": "system.linq.dynamic.core/1.6.0.1",
+      "hashPath": "system.linq.dynamic.core.1.6.0.1.nupkg.sha512"
     },
     "System.Memory/4.5.4": {
       "type": "package",

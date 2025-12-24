@@ -1,4 +1,5 @@
 ﻿@page "/financial_records/details"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using DataAccess
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
@@ -46,7 +47,19 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        financial_record = await context.FINANCIAL_RECORD.FirstOrDefaultAsync(m => m.ID == ID);
+        financial_record = await context.FINANCIAL_RECORD
+            .Where(fr => fr.ID == ID)
+            .Select(fr => new FINANCIAL_RECORD
+            {
+                ID = fr.ID,
+                BRANCHID = fr.BRANCHID,
+                MEMBERID = fr.MEMBERID,
+                amount = fr.amount,
+                payment_date = fr.payment_date,
+                payment_method = fr.payment_method,
+                transaction_type = fr.transaction_type
+            })
+            .FirstOrDefaultAsync();
 
         if (financial_record is null)
         {
