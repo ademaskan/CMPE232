@@ -5,35 +5,77 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Enrollment Details - Dance Academy</PageTitle>
 
-<h1>Details</h1>
-
-<div>
-    <h2>COURSE_ENROLLMENT</h2>
-    <hr />
-    @if (course_enrollment is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">MEMBERID</dt>
-            <dd class="col-sm-10">@course_enrollment.MEMBERID</dd>
-            <dt class="col-sm-2">COURSE_CATEGORYID</dt>
-            <dd class="col-sm-10">@course_enrollment.COURSE_CATEGORYID</dd>
-            <dt class="col-sm-2">enrollment_date</dt>
-            <dd class="col-sm-10">@course_enrollment.enrollment_date</dd>
-        </dl>
-        <div>
-            <a href="@($"/course_enrollments/edit?id={course_enrollment.ID}")">Edit</a> |
-            <a href="@($"/course_enrollments")">Back to List</a>
-        </div>
-    }
+<div class="page-header">
+    <h1><i class="bi bi-journal-text me-2"></i>Enrollment Details</h1>
+    <p>View complete enrollment information</p>
 </div>
 
+@if (enrollment is null)
+{
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading enrollment details...</span>
+    </div>
+}
+else
+{
+    <div class="content-card">
+        <div class="content-card-header">
+            <div>
+                <h2 class="content-card-title mb-0">@memberName</h2>
+                <span class="text-muted">Enrollment ID: @enrollment.ID</span>
+            </div>
+        </div>
+        
+        <h4 class="form-section-title"><i class="bi bi-person me-2"></i>Member Information</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">Member Name</div>
+                <div class="detail-value">@memberName</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Member ID</div>
+                <div class="detail-value">@enrollment.MEMBERID</div>
+            </div>
+        </div>
+
+        <h4 class="form-section-title"><i class="bi bi-mortarboard me-2"></i>Course Information</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">Course Category</div>
+                <div class="detail-value">@courseName</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Course ID</div>
+                <div class="detail-value">@enrollment.COURSE_CATEGORYID</div>
+            </div>
+        </div>
+
+        <h4 class="form-section-title"><i class="bi bi-calendar me-2"></i>Enrollment Details</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">Enrollment Date</div>
+                <div class="detail-value">@enrollment.enrollment_date.ToString("MMMM dd, yyyy")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="@($"/course_enrollments/edit?id={enrollment.ID}")" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Edit Enrollment
+        </a>
+        <a href="/course_enrollments" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+}
+
 @code {
-    private COURSE_ENROLLMENT? course_enrollment;
+    private COURSE_ENROLLMENT? enrollment;
+    private string memberName = "";
+    private string courseName = "";
 
     [SupplyParameterFromQuery]
     private int ID { get; set; }
@@ -41,20 +83,31 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        course_enrollment = await context.COURSE_ENROLLMENT
+        
+        var data = await context.COURSE_ENROLLMENT
             .Where(ce => ce.ID == ID)
-            .Select(ce => new COURSE_ENROLLMENT
+            .Select(ce => new 
             {
-                ID = ce.ID,
-                MEMBERID = ce.MEMBERID,
-                COURSE_CATEGORYID = ce.COURSE_CATEGORYID,
-                enrollment_date = ce.enrollment_date
+                Enrollment = new COURSE_ENROLLMENT
+                {
+                    ID = ce.ID,
+                    MEMBERID = ce.MEMBERID,
+                    COURSE_CATEGORYID = ce.COURSE_CATEGORYID,
+                    enrollment_date = ce.enrollment_date
+                },
+                MemberName = ce.MEMBER.member_first_name + " " + ce.MEMBER.member_last_name,
+                CourseName = ce.COURSE_CATEGORY.course_category_name
             })
             .FirstOrDefaultAsync();
 
-        if (course_enrollment is null)
+        if (data is null)
         {
             NavigationManager.NavigateTo("notfound");
+            return;
         }
+
+        enrollment = data.Enrollment;
+        memberName = data.MemberName ?? "Unknown";
+        courseName = data.CourseName ?? "Unknown";
     }
 }

@@ -7,42 +7,170 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Enrollments - Dance Academy</PageTitle>
 
-<h1>Index</h1>
+<div class="page-header">
+    <h1><i class="bi bi-journal-check me-2"></i>Course Enrollments</h1>
+    <p>Manage member course enrollments</p>
+    <div class="page-header-actions">
+        <a href="course_enrollments/create" class="btn btn-light">
+            <i class="bi bi-plus-lg"></i> Add New Enrollment
+        </a>
+    </div>
+</div>
 
-<p>
-    <a href="course_enrollments/create">Create New</a>
-</p>
-
-<QuickGrid Class="table" Items="CourseEnrollments">
-    <PropertyColumn Property="course_enrollment => course_enrollment.MEMBERID" />
-    <PropertyColumn Property="course_enrollment => course_enrollment.COURSE_CATEGORYID" />
-    <PropertyColumn Property="course_enrollment => course_enrollment.enrollment_date" />
-
-    <TemplateColumn Context="course_enrollment">
-        <a href="@($"course_enrollments/edit?id={course_enrollment.ID}")">Edit</a> |
-        <a href="@($"course_enrollments/details?id={course_enrollment.ID}")">Details</a> |
-        <a href="@($"course_enrollments/delete?id={course_enrollment.ID}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="table-search">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search enrollments..." @bind="searchTerm" @bind:event="oninput" @bind:after="OnSearchChanged" />
+        </div>
+        <div class="text-muted">
+            @if (enrollmentCount > 0)
+            {
+                <span>@enrollmentCount enrollment(s) found</span>
+            }
+        </div>
+    </div>
+    
+    @if (enrollments == null)
+    {
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <span>Loading enrollments...</span>
+        </div>
+    }
+    else if (!enrollments.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-journal-check"></i>
+            </div>
+            <div class="empty-state-title">No enrollments yet</div>
+            <p class="empty-state-text">Get started by enrolling a member in a course.</p>
+            <a href="course_enrollments/create" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add First Enrollment
+            </a>
+        </div>
+    }
+    else
+    {
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Member</th>
+                    <th>Course</th>
+                    <th>Enrollment Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var enrollment in enrollments)
+                {
+                    <tr>
+                        <td>
+                            <div class="member-name">
+                                <div class="member-avatar">
+                                    @GetInitials(enrollment.MemberName)
+                                </div>
+                                <div class="member-info">
+                                    <span class="member-fullname">@enrollment.MemberName</span>
+                                    <span class="member-email">ID: @enrollment.MEMBERID</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <strong>@enrollment.CourseName</strong>
+                            </div>
+                        </td>
+                        <td>@enrollment.enrollment_date.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="@($"course_enrollments/details?id={enrollment.ID}")" class="btn-action btn-action-view" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@($"course_enrollments/edit?id={enrollment.ID}")" class="btn-action btn-action-edit" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="@($"course_enrollments/delete?id={enrollment.ID}")" class="btn-action btn-action-delete" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 
 @code {
     private DanceAcademyContext context = default!;
+    private List<EnrollmentViewModel>? enrollments;
+    private int enrollmentCount;
+    private string searchTerm = "";
 
-    private IQueryable<COURSE_ENROLLMENT> CourseEnrollments => 
-        context.COURSE_ENROLLMENT.Select(ce => new COURSE_ENROLLMENT 
-        { 
-            ID = ce.ID, 
-            MEMBERID = ce.MEMBERID, 
-            COURSE_CATEGORYID = ce.COURSE_CATEGORYID,
-            enrollment_date = ce.enrollment_date
-        });
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         context = DbFactory.CreateDbContext();
+        await LoadEnrollments();
+    }
+
+    private async Task OnSearchChanged()
+    {
+        await LoadEnrollments();
+    }
+
+    private async Task LoadEnrollments()
+    {
+        var query = context.COURSE_ENROLLMENT
+            .Include(ce => ce.MEMBER)
+            .Include(ce => ce.COURSE_CATEGORY)
+            .AsQueryable();
+        
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = searchTerm.ToLower();
+            query = query.Where(ce => 
+                (ce.MEMBER.member_first_name != null && ce.MEMBER.member_first_name.ToLower().Contains(term)) ||
+                (ce.MEMBER.member_last_name != null && ce.MEMBER.member_last_name.ToLower().Contains(term)) ||
+                (ce.COURSE_CATEGORY.course_category_name != null && ce.COURSE_CATEGORY.course_category_name.ToLower().Contains(term)));
+        }
+        
+        enrollments = await query
+            .Select(ce => new EnrollmentViewModel 
+            { 
+                ID = ce.ID, 
+                MEMBERID = ce.MEMBERID,
+                MemberName = ce.MEMBER.member_first_name + " " + ce.MEMBER.member_last_name,
+                COURSE_CATEGORYID = ce.COURSE_CATEGORYID,
+                CourseName = ce.COURSE_CATEGORY.course_category_name ?? "Unknown",
+                enrollment_date = ce.enrollment_date
+            })
+            .ToListAsync();
+            
+        enrollmentCount = enrollments.Count;
+    }
+
+    private string GetInitials(string? name)
+    {
+        if (string.IsNullOrEmpty(name)) return "?";
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length >= 2)
+            return (parts[0][0].ToString() + parts[1][0].ToString()).ToUpper();
+        return parts[0][0].ToString().ToUpper();
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
+
+    private class EnrollmentViewModel
+    {
+        public int ID { get; set; }
+        public int MEMBERID { get; set; }
+        public string MemberName { get; set; } = "";
+        public int COURSE_CATEGORYID { get; set; }
+        public string CourseName { get; set; } = "";
+        public DateTime enrollment_date { get; set; }
+    }
 }

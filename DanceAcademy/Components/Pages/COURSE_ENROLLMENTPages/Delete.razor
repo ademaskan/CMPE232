@@ -5,40 +5,70 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Delete</PageTitle>
+<PageTitle>Delete Enrollment - Dance Academy</PageTitle>
 
-<h1>Delete</h1>
-
-<p>Are you sure you want to delete this?</p>
-<div>
-    <h2>COURSE_ENROLLMENT</h2>
-    <hr />
-    @if (course_enrollment is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">MEMBERID</dt>
-            <dd class="col-sm-10">@course_enrollment.MEMBERID</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">COURSE_CATEGORYID</dt>
-            <dd class="col-sm-10">@course_enrollment.COURSE_CATEGORYID</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">enrollment_date</dt>
-            <dd class="col-sm-10">@course_enrollment.enrollment_date</dd>
-        </dl>
-        <EditForm Model="course_enrollment" OnValidSubmit="DeleteCOURSE_ENROLLMENT">
-            <button type="submit" class="btn btn-danger" disabled="@(course_enrollment is null)">Delete</button> |
-            <a href="/course_enrollments">Back to List</a>
-        </EditForm>
-    }
+<div class="page-header" style="background: linear-gradient(135deg, #ef5350 0%, #c62828 100%);">
+    <h1><i class="bi bi-trash me-2"></i>Delete Enrollment</h1>
+    <p>Remove an enrollment from the system</p>
 </div>
 
+@if (enrollment is null)
+{
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading enrollment details...</span>
+    </div>
+}
+else
+{
+    <div class="delete-warning">
+        <div class="delete-warning-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <div class="delete-warning-title">Are you sure you want to delete this enrollment?</div>
+        <p class="delete-warning-text">This action cannot be undone. The enrollment record will be permanently removed.</p>
+    </div>
+
+    <div class="content-card">
+        <div class="content-card-header">
+            <div>
+                <h2 class="content-card-title mb-0">@memberName</h2>
+                <span class="text-muted">Enrollment ID: @enrollment.ID</span>
+            </div>
+        </div>
+        
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="detail-label">Member</div>
+                <div class="detail-value">@memberName</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Course</div>
+                <div class="detail-value">@courseName</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Enrollment Date</div>
+                <div class="detail-value">@enrollment.enrollment_date.ToString("MMMM dd, yyyy")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <EditForm Model="enrollment" OnValidSubmit="DeleteEnrollment" FormName="DeleteEnrollment">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Yes, Delete Enrollment
+            </button>
+        </EditForm>
+        <a href="/course_enrollments" class="btn btn-secondary">
+            <i class="bi bi-x-lg"></i> Cancel
+        </a>
+    </div>
+}
+
 @code {
-    private COURSE_ENROLLMENT? course_enrollment;
+    private COURSE_ENROLLMENT? enrollment;
+    private string memberName = "";
+    private string courseName = "";
 
     [SupplyParameterFromQuery]
     private int ID { get; set; }
@@ -46,27 +76,38 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        course_enrollment = await context.COURSE_ENROLLMENT
+        
+        var data = await context.COURSE_ENROLLMENT
             .Where(ce => ce.ID == ID)
-            .Select(ce => new COURSE_ENROLLMENT
+            .Select(ce => new 
             {
-                ID = ce.ID,
-                MEMBERID = ce.MEMBERID,
-                COURSE_CATEGORYID = ce.COURSE_CATEGORYID,
-                enrollment_date = ce.enrollment_date
+                Enrollment = new COURSE_ENROLLMENT
+                {
+                    ID = ce.ID,
+                    MEMBERID = ce.MEMBERID,
+                    COURSE_CATEGORYID = ce.COURSE_CATEGORYID,
+                    enrollment_date = ce.enrollment_date
+                },
+                MemberName = ce.MEMBER.member_first_name + " " + ce.MEMBER.member_last_name,
+                CourseName = ce.COURSE_CATEGORY.course_category_name
             })
             .FirstOrDefaultAsync();
 
-        if (course_enrollment is null)
+        if (data is null)
         {
             NavigationManager.NavigateTo("notfound");
+            return;
         }
+
+        enrollment = data.Enrollment;
+        memberName = data.MemberName ?? "Unknown";
+        courseName = data.CourseName ?? "Unknown";
     }
 
-    private async Task DeleteCOURSE_ENROLLMENT()
+    private async Task DeleteEnrollment()
     {
         using var context = DbFactory.CreateDbContext();
-        context.COURSE_ENROLLMENT.Remove(course_enrollment!);
+        context.COURSE_ENROLLMENT.Remove(enrollment!);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/course_enrollments");
     }

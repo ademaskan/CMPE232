@@ -5,48 +5,98 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Add New Enrollment - Dance Academy</PageTitle>
 
-<h1>Create</h1>
+<div class="page-header">
+    <h1><i class="bi bi-plus-circle me-2"></i>Add New Enrollment</h1>
+    <p>Enroll a member in a course</p>
+</div>
 
-<h2>COURSE_ENROLLMENT</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="COURSE_ENROLLMENT" OnValidSubmit="AddCOURSE_ENROLLMENT">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="memberid" class="form-label">MEMBERID:</label> 
-                <InputNumber id="memberid" @bind-Value="COURSE_ENROLLMENT.MEMBERID" class="form-control" /> 
-                <ValidationMessage For="() => COURSE_ENROLLMENT.MEMBERID" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="course_categoryid" class="form-label">COURSE_CATEGORYID:</label> 
-                <InputNumber id="course_categoryid" @bind-Value="COURSE_ENROLLMENT.COURSE_CATEGORYID" class="form-control" /> 
-                <ValidationMessage For="() => COURSE_ENROLLMENT.COURSE_CATEGORYID" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="enrollment_date" class="form-label">enrollment_date:</label> 
-                <InputDate id="enrollment_date" @bind-Value="COURSE_ENROLLMENT.enrollment_date" class="form-control" /> 
-                <ValidationMessage For="() => COURSE_ENROLLMENT.enrollment_date" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+<EditForm Model="Enrollment" OnValidSubmit="AddEnrollment" FormName="CreateEnrollment">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="alert alert-danger" role="alert"/>
+    
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-person me-2"></i>Member</h3>
+        <div class="mb-3">
+            <label for="memberid" class="form-label">Select Member</label>
+            <InputSelect id="memberid" @bind-Value="Enrollment.MEMBERID" class="form-control">
+                <option value="0">Select a member...</option>
+                @if (members != null)
+                {
+                    @foreach (var member in members)
+                    {
+                        <option value="@member.ID">@member.member_first_name @member.member_last_name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="() => Enrollment.MEMBERID" class="text-danger" />
+        </div>
     </div>
-</div>
 
-<div>
-    <a href="/course_enrollments">Back to List</a>
-</div>
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-mortarboard me-2"></i>Course</h3>
+        <div class="mb-3">
+            <label for="course_categoryid" class="form-label">Select Course Category</label>
+            <InputSelect id="course_categoryid" @bind-Value="Enrollment.COURSE_CATEGORYID" class="form-control">
+                <option value="0">Select a course...</option>
+                @if (courses != null)
+                {
+                    @foreach (var course in courses)
+                    {
+                        <option value="@course.ID">@course.course_category_name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="() => Enrollment.COURSE_CATEGORYID" class="text-danger" />
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-calendar me-2"></i>Enrollment Details</h3>
+        <div class="form-row">
+            <div class="mb-3">
+                <label for="enrollment_date" class="form-label">Enrollment Date</label>
+                <InputDate id="enrollment_date" @bind-Value="Enrollment.enrollment_date" class="form-control" />
+                <ValidationMessage For="() => Enrollment.enrollment_date" class="text-danger" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i> Create Enrollment
+        </button>
+        <a href="/course_enrollments" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</EditForm>
 
 @code {
-    private COURSE_ENROLLMENT COURSE_ENROLLMENT { get; set; } = new();
+    private COURSE_ENROLLMENT Enrollment { get; set; } = new() 
+    { 
+        enrollment_date = DateTime.Today
+    };
 
-    private async Task AddCOURSE_ENROLLMENT()
+    private List<MEMBER>? members;
+    private List<COURSE_CATEGORY>? courses;
+
+    protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        context.COURSE_ENROLLMENT.Add(COURSE_ENROLLMENT);
+        members = await context.MEMBER
+            .Select(m => new MEMBER { ID = m.ID, member_first_name = m.member_first_name, member_last_name = m.member_last_name })
+            .ToListAsync();
+        courses = await context.COURSE_CATEGORY
+            .Select(c => new COURSE_CATEGORY { ID = c.ID, course_category_name = c.course_category_name })
+            .ToListAsync();
+    }
+
+    private async Task AddEnrollment()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.COURSE_ENROLLMENT.Add(Enrollment);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/course_enrollments");
     }
