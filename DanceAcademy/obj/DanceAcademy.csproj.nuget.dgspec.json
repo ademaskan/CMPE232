@@ -109,28 +109,12 @@
         "projectUniqueName": "C:\\Users\\adem\\source\\repos\\CMPE232\\DataAccess\\DataAccess\\DataAccess.csproj",
         "projectName": "DataAccess",
         "projectPath": "C:\\Users\\adem\\source\\repos\\CMPE232\\DataAccess\\DataAccess\\DataAccess.csproj",
-        "packagesPath": "C:\\Users\\adem\\.nuget\\packages\\",
-        "projectStyle": "PackagesConfig",
         "UsingMicrosoftNETSdk": false,
-        "configFilePaths": [
-          "C:\\Users\\adem\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
-        ],
-        "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
-        },
         "frameworks": {
           "net48": {
             "projectReferences": {}
           }
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low"
-        },
-        "packagesConfigPath": "C:\\Users\\adem\\source\\repos\\CMPE232\\DataAccess\\DataAccess\\packages.config"
+        }
       },
       "frameworks": {
         "net48": {}
