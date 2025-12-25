@@ -5,49 +5,48 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
+<PageTitle>Add New Category - Dance Academy</PageTitle>
 
-<PageTitle>Create Course Category</PageTitle>
+<div class="page-header">
+    <h1><i class="bi bi-plus-circle me-2"></i>Add New Category</h1>
+    <p>Create a new course category</p>
+</div>
 
-<h1>Create</h1>
-
-<h2>Course Category</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="COURSE_CATEGORY" OnValidSubmit="AddCOURSE_CATEGORY">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="course_category_name" class="form-label">Category Name:</label> 
-                <InputText id="course_category_name" @bind-Value="COURSE_CATEGORY.course_category_name" class="form-control" /> 
-                <ValidationMessage For="() => COURSE_CATEGORY.course_category_name" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="description" class="form-label">Description:</label> 
-                <InputTextArea id="description" @bind-Value="COURSE_CATEGORY.description" class="form-control" rows="4" /> 
-                <ValidationMessage For="() => COURSE_CATEGORY.description" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+<EditForm Model="Category" OnValidSubmit="AddCategory" FormName="CreateCategory">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="alert alert-danger" role="alert"/>
+    
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-collection me-2"></i>Category Information</h3>
+        <div class="mb-3">
+            <label for="course_category_name" class="form-label">Category Name</label>
+            <InputText id="course_category_name" @bind-Value="Category.course_category_name" class="form-control" placeholder="e.g. Ballet, Hip Hop, Contemporary" />
+            <ValidationMessage For="() => Category.course_category_name" class="text-danger" />
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <InputTextArea id="description" @bind-Value="Category.description" class="form-control" rows="4" placeholder="Describe the dance style, level, and what students will learn..." />
+            <ValidationMessage For="() => Category.description" class="text-danger" />
+        </div>
     </div>
-</div>
 
-<div>
-    <a href="/course_categories">Back to List</a>
-</div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i> Create Category
+        </button>
+        <a href="/course_categories" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</EditForm>
 
 @code {
-    private COURSE_CATEGORY COURSE_CATEGORY { get; set; } = new();
+    private COURSE_CATEGORY Category { get; set; } = new();
 
-    private async Task AddCOURSE_CATEGORY()
+    private async Task AddCategory()
     {
-        Console.WriteLine("********************************************************************************");
-        Console.WriteLine("Course Category Name: " + COURSE_CATEGORY.course_category_name);
-        Console.WriteLine("Description: " + COURSE_CATEGORY.description);
-        Console.WriteLine("********************************************************************************");
-       
         using var context = DbFactory.CreateDbContext();
-        context.COURSE_CATEGORY.Add(COURSE_CATEGORY);
+        context.COURSE_CATEGORY.Add(Category);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/course_categories");
     }

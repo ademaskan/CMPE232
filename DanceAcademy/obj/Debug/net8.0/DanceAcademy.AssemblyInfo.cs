@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DanceAcademy")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f0ab29c09ffaec2fbcb7fb1414aeccb52d3c8867")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b23b13054d39c79c54be74b975f122ef75b84770")]
 [assembly: System.Reflection.AssemblyProductAttribute("DanceAcademy")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DanceAcademy")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

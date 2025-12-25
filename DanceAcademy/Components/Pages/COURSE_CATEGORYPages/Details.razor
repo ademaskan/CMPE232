@@ -5,33 +5,56 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Category Details - Dance Academy</PageTitle>
 
-<h1>Details</h1>
-
-<div>
-    <h2>COURSE_CATEGORY</h2>
-    <hr />
-    @if (course_category is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">course_category_name</dt>
-            <dd class="col-sm-10">@course_category.course_category_name</dd>
-            <dt class="col-sm-2">description</dt>
-            <dd class="col-sm-10">@course_category.description</dd>
-        </dl>
-        <div>
-            <a href="@($"/course_categories/edit?id={course_category.ID}")">Edit</a> |
-            <a href="@($"/course_categories")">Back to List</a>
-        </div>
-    }
+<div class="page-header">
+    <h1><i class="bi bi-collection me-2"></i>Category Details</h1>
+    <p>View complete category information</p>
 </div>
 
+@if (category is null)
+{
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading category details...</span>
+    </div>
+}
+else
+{
+    <div class="content-card">
+        <div class="content-card-header">
+            <div>
+                <h2 class="content-card-title mb-0">@category.course_category_name</h2>
+                <span class="text-muted">Category ID: @category.ID</span>
+            </div>
+        </div>
+        
+        <h4 class="form-section-title"><i class="bi bi-info-circle me-2"></i>Category Information</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">Category Name</div>
+                <div class="detail-value">@(category.course_category_name ?? "-")</div>
+            </div>
+        </div>
+
+        <h4 class="form-section-title"><i class="bi bi-text-paragraph me-2"></i>Description</h4>
+        <div class="content-card" style="background: var(--gray-100); margin-bottom: 1.5rem;">
+            <p style="margin: 0; white-space: pre-wrap;">@(category.description ?? "No description provided.")</p>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="@($"/course_categories/edit?id={category.ID}")" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Edit Category
+        </a>
+        <a href="/course_categories" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+}
+
 @code {
-    private COURSE_CATEGORY? course_category;
+    private COURSE_CATEGORY? category;
 
     [SupplyParameterFromQuery]
     private int ID { get; set; }
@@ -39,7 +62,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        course_category = await context.COURSE_CATEGORY
+        category = await context.COURSE_CATEGORY
             .Where(c => c.ID == ID)
             .Select(c => new COURSE_CATEGORY
             {
@@ -49,7 +72,7 @@
             })
             .FirstOrDefaultAsync();
 
-        if (course_category is null)
+        if (category is null)
         {
             NavigationManager.NavigateTo("notfound");
         }

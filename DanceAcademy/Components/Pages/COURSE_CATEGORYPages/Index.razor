@@ -1,4 +1,5 @@
 ﻿@page "/course_categories"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using DataAccess
@@ -6,39 +7,153 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Course Categories - Dance Academy</PageTitle>
 
-<h1>Index</h1>
+<div class="page-header">
+    <h1><i class="bi bi-collection me-2"></i>Course Categories</h1>
+    <p>Manage dance course categories</p>
+    <div class="page-header-actions">
+        <a href="course_categories/create" class="btn btn-light">
+            <i class="bi bi-plus-lg"></i> Add New Category
+        </a>
+    </div>
+</div>
 
-<p>
-    <a href="course_categories/create">Create New</a>
-</p>
-
-<QuickGrid Class="table" Items="Categories">
-    <PropertyColumn Property="course_category => course_category.course_category_name" />
-    <PropertyColumn Property="course_category => course_category.description" />
-
-    <TemplateColumn Context="course_category">
-        <a href="@($"course_categories/edit?id={course_category.ID}")">Edit</a> |
-        <a href="@($"course_categories/details?id={course_category.ID}")">Details</a> |
-        <a href="@($"course_categories/delete?id={course_category.ID}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="table-search">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search categories..." @bind="searchTerm" @bind:event="oninput" @bind:after="OnSearchChanged" />
+        </div>
+        <div class="text-muted">
+            @if (categoryCount > 0)
+            {
+                <span>@categoryCount category(ies) found</span>
+            }
+        </div>
+    </div>
+    
+    @if (categories == null)
+    {
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <span>Loading categories...</span>
+        </div>
+    }
+    else if (!categories.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-collection"></i>
+            </div>
+            <div class="empty-state-title">No categories yet</div>
+            <p class="empty-state-text">Get started by adding your first course category.</p>
+            <a href="course_categories/create" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add First Category
+            </a>
+        </div>
+    }
+    else
+    {
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in categories)
+                {
+                    <tr>
+                        <td>
+                            <div class="member-name">
+                                <div class="member-avatar">
+                                    @GetInitials(category.course_category_name)
+                                </div>
+                                <div class="member-info">
+                                    <span class="member-fullname">@category.course_category_name</span>
+                                    <span class="member-email">ID: @category.ID</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>@TruncateText(category.description, 60)</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="@($"course_categories/details?id={category.ID}")" class="btn-action btn-action-view" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@($"course_categories/edit?id={category.ID}")" class="btn-action btn-action-edit" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="@($"course_categories/delete?id={category.ID}")" class="btn-action btn-action-delete" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 
 @code {
     private DanceAcademyContext context = default!;
-    private IQueryable<COURSE_CATEGORY> Categories => 
-        context.COURSE_CATEGORY.Select(c => new COURSE_CATEGORY 
-        { 
-            ID = c.ID, 
-            course_category_name = c.course_category_name, 
-            description = c.description 
-            
-        });
+    private List<COURSE_CATEGORY>? categories;
+    private int categoryCount;
+    private string searchTerm = "";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         context = DbFactory.CreateDbContext();
+        await LoadCategories();
+    }
+
+    private async Task OnSearchChanged()
+    {
+        await LoadCategories();
+        StateHasChanged();
+    }
+
+    private async Task LoadCategories()
+    {
+        var query = context.COURSE_CATEGORY.AsNoTracking();
+        
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = $"%{searchTerm}%";
+            query = query.Where(c => 
+                EF.Functions.Like(c.course_category_name ?? "", term) ||
+                EF.Functions.Like(c.description ?? "", term));
+        }
+        
+        categories = await query
+            .Select(c => new COURSE_CATEGORY 
+            { 
+                ID = c.ID, 
+                course_category_name = c.course_category_name, 
+                description = c.description 
+            })
+            .ToListAsync();
+            
+        categoryCount = categories.Count;
+    }
+
+    private string GetInitials(string? name)
+    {
+        if (string.IsNullOrEmpty(name)) return "?";
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length >= 2)
+            return (parts[0][0].ToString() + parts[1][0].ToString()).ToUpper();
+        return name.Length >= 2 ? name.Substring(0, 2).ToUpper() : name.ToUpper();
+    }
+
+    private string TruncateText(string? text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text)) return "-";
+        return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();

@@ -5,54 +5,62 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Edit</PageTitle>
+<PageTitle>Edit Category - Dance Academy</PageTitle>
 
-<h1>Edit</h1>
+<div class="page-header">
+    <h1><i class="bi bi-pencil-square me-2"></i>Edit Category</h1>
+    <p>Update category details</p>
+</div>
 
-<h2>COURSE_CATEGORY</h2>
-<hr />
-@if (COURSE_CATEGORY is null)
+@if (Category is null)
 {
-    <p><em>Loading...</em></p>
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading category details...</span>
+    </div>
 }
 else
 {
-    <div class="row">
-        <div class="col-md-4">
-            <EditForm Model="COURSE_CATEGORY" OnValidSubmit="UpdateCOURSE_CATEGORY">
-                <DataAnnotationsValidator />
-                <ValidationSummary role="alert"/>
-                <input type="hidden" name="COURSE_CATEGORY.ID" value="@COURSE_CATEGORY.ID" />
-                <div class="mb-3">
-                    <label for="course_category_name" class="form-label">course_category_name:</label>
-                    <InputText id="course_category_name" @bind-Value="COURSE_CATEGORY.course_category_name" class="form-control" />
-                    <ValidationMessage For="() => COURSE_CATEGORY.course_category_name" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">description:</label>
-                    <InputText id="description" @bind-Value="COURSE_CATEGORY.description" class="form-control" />
-                    <ValidationMessage For="() => COURSE_CATEGORY.description" class="text-danger" />
-                </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </EditForm>
+    <EditForm Model="Category" OnValidSubmit="UpdateCategory" FormName="EditCategory">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="alert alert-danger" role="alert"/>
+        <input type="hidden" name="Category.ID" value="@Category.ID" />
+        
+        <div class="form-section">
+            <h3 class="form-section-title"><i class="bi bi-collection me-2"></i>Category Information</h3>
+            <div class="mb-3">
+                <label for="course_category_name" class="form-label">Category Name</label>
+                <InputText id="course_category_name" @bind-Value="Category.course_category_name" class="form-control" placeholder="e.g. Ballet, Hip Hop, Contemporary" />
+                <ValidationMessage For="() => Category.course_category_name" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <InputTextArea id="description" @bind-Value="Category.description" class="form-control" rows="4" placeholder="Describe the dance style, level, and what students will learn..." />
+                <ValidationMessage For="() => Category.description" class="text-danger" />
+            </div>
         </div>
-    </div>
-}
 
-<div>
-    <a href="/course_categories">Back to List</a>
-</div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i> Save Changes
+            </button>
+            <a href="/course_categories" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </EditForm>
+}
 
 @code {
     [SupplyParameterFromQuery]
     private int ID { get; set; }
 
-    private COURSE_CATEGORY? COURSE_CATEGORY { get; set; }
+    private COURSE_CATEGORY? Category { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        COURSE_CATEGORY = await context.COURSE_CATEGORY
+        Category = await context.COURSE_CATEGORY
             .Where(c => c.ID == ID)
             .Select(c => new COURSE_CATEGORY
             {
@@ -62,18 +70,16 @@ else
             })
             .FirstOrDefaultAsync();
 
-        if (COURSE_CATEGORY is null)
+        if (Category is null)
         {
             NavigationManager.NavigateTo("notfound");
         }
     }
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task UpdateCOURSE_CATEGORY()
+    private async Task UpdateCategory()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Attach(COURSE_CATEGORY!).State = EntityState.Modified;
+        context.Attach(Category!).State = EntityState.Modified;
 
         try
         {
@@ -81,7 +87,7 @@ else
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!COURSE_CATEGORYExists(COURSE_CATEGORY!.ID))
+            if (!CategoryExists(Category!.ID))
             {
                 NavigationManager.NavigateTo("notfound");
             }
@@ -94,7 +100,7 @@ else
         NavigationManager.NavigateTo("/course_categories");
     }
 
-    private bool COURSE_CATEGORYExists(int id)
+    private bool CategoryExists(int id)
     {
         using var context = DbFactory.CreateDbContext();
         return context.COURSE_CATEGORY.Any(e => e.ID == id);
