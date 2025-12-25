@@ -24,10 +24,14 @@ namespace DanceAcademy.Data
         public DbSet<DataAccess.FINANCIAL_RECORD> FINANCIAL_RECORD { get; set; } = default!;
         public DbSet<DataAccess.MEMBER> MEMBER { get; set; } = default!;
         public DbSet<DataAccess.MEMBERSHIP> MEMBERSHIP { get; set; } = default!;
-        /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Mark net_profit as a computed column (calculated by SQL Server)
+            modelBuilder.Entity<BRANCH_PERFORMANCE>()
+                .Property(bp => bp.net_profit)
+                .HasComputedColumnSql();
 
             // Configure relationships to prevent circular references
             modelBuilder.Entity<COURSE_ENROLLMENT>()
@@ -77,6 +81,6 @@ namespace DanceAcademy.Data
                 .WithMany(b => b.BRANCH_PERFORMANCE)
                 .HasForeignKey(bp => bp.BRANCHID)
                 .OnDelete(DeleteBehavior.Restrict);
-        }*/
+        }
     }
 }

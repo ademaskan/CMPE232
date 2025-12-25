@@ -75,13 +75,6 @@
                 <ValidationMessage For="() => Performance.expenses" class="text-danger" />
             </div>
         </div>
-        <div class="form-row">
-            <div class="mb-3">
-                <label for="net_profit" class="form-label">Net Profit (optional - auto-calculated if empty)</label>
-                <InputNumber id="net_profit" @bind-Value="Performance.net_profit" class="form-control" placeholder="Auto-calculated" />
-                <ValidationMessage For="() => Performance.net_profit" class="text-danger" />
-            </div>
-        </div>
     </div>
 
     <div class="form-actions">
@@ -113,12 +106,6 @@
 
     private async Task AddPerformance()
     {
-        // Auto-calculate net profit if not provided
-        if (!Performance.net_profit.HasValue)
-        {
-            Performance.net_profit = Performance.revenue - Performance.expenses;
-        }
-
         using var context = DbFactory.CreateDbContext();
         context.BRANCH_PERFORMANCE.Add(Performance);
         await context.SaveChangesAsync();

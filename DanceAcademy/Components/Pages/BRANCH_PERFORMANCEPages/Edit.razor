@@ -87,9 +87,8 @@ else
             </div>
             <div class="form-row">
                 <div class="mb-3">
-                    <label for="net_profit" class="form-label">Net Profit</label>
-                    <InputNumber id="net_profit" @bind-Value="Performance.net_profit" class="form-control" placeholder="0.00" />
-                    <ValidationMessage For="() => Performance.net_profit" class="text-danger" />
+                    <label class="form-label">Net Profit (auto-calculated)</label>
+                    <div class="form-control-plaintext">@(Performance.net_profit?.ToString("C") ?? "Will be calculated")</div>
                 </div>
             </div>
         </div>
