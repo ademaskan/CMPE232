@@ -5,52 +5,82 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Delete</PageTitle>
+<PageTitle>Delete Membership - Dance Academy</PageTitle>
 
-<h1>Delete</h1>
-
-<p>Are you sure you want to delete this?</p>
-<div>
-    <h2>MEMBERSHIP</h2>
-    <hr />
-    @if (membership is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">MEMBERID</dt>
-            <dd class="col-sm-10">@membership.MEMBERID</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">BRANCHID</dt>
-            <dd class="col-sm-10">@membership.BRANCHID</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">membership_type</dt>
-            <dd class="col-sm-10">@membership.membership_type</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">start_date</dt>
-            <dd class="col-sm-10">@membership.start_date</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">end_date</dt>
-            <dd class="col-sm-10">@membership.end_date</dd>
-        </dl>
-        <dl class="row">
-            <dt class="col-sm-2">fee_amount</dt>
-            <dd class="col-sm-10">@membership.fee_amount</dd>
-        </dl>
-        <EditForm Model="membership" OnValidSubmit="DeleteMEMBERSHIP">
-            <button type="submit" class="btn btn-danger" disabled="@(membership is null)">Delete</button> |
-            <a href="/memberships">Back to List</a>
-        </EditForm>
-    }
+<div class="page-header" style="background: linear-gradient(135deg, #ef5350 0%, #c62828 100%);">
+    <h1><i class="bi bi-trash me-2"></i>Delete Membership</h1>
+    <p>Remove a membership from the system</p>
 </div>
+
+@if (membership is null)
+{
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading membership details...</span>
+    </div>
+}
+else
+{
+    <div class="delete-warning">
+        <div class="delete-warning-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <div class="delete-warning-title">Are you sure you want to delete this membership?</div>
+        <p class="delete-warning-text">This action cannot be undone. The membership record will be permanently removed.</p>
+    </div>
+
+    <div class="content-card">
+        <div class="content-card-header">
+            <div>
+                <h2 class="content-card-title mb-0">@memberName</h2>
+                <span class="text-muted">Membership ID: @membership.ID</span>
+            </div>
+        </div>
+        
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="detail-label">Member</div>
+                <div class="detail-value">@memberName</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Branch</div>
+                <div class="detail-value">@branchName</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Membership Type</div>
+                <div class="detail-value">@(membership.membership_type ?? "-")</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Fee Amount</div>
+                <div class="detail-value">@membership.fee_amount.ToString("C")</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Start Date</div>
+                <div class="detail-value">@membership.start_date.ToString("MMMM dd, yyyy")</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">End Date</div>
+                <div class="detail-value">@membership.end_date.ToString("MMMM dd, yyyy")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <EditForm Model="membership" OnValidSubmit="DeleteMembership" FormName="DeleteMembership">
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Yes, Delete Membership
+            </button>
+        </EditForm>
+        <a href="/memberships" class="btn btn-secondary">
+            <i class="bi bi-x-lg"></i> Cancel
+        </a>
+    </div>
+}
 
 @code {
     private MEMBERSHIP? membership;
+    private string memberName = "";
+    private string branchName = "";
 
     [SupplyParameterFromQuery]
     private int ID { get; set; }
@@ -58,27 +88,38 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        membership = await context.MEMBERSHIP
+        
+        var data = await context.MEMBERSHIP
             .Where(ms => ms.ID == ID)
-            .Select(ms => new MEMBERSHIP
+            .Select(ms => new 
             {
-                ID = ms.ID,
-                MEMBERID = ms.MEMBERID,
-                BRANCHID = ms.BRANCHID,
-                membership_type = ms.membership_type,
-                start_date = ms.start_date,
-                end_date = ms.end_date,
-                fee_amount = ms.fee_amount
+                Membership = new MEMBERSHIP
+                {
+                    ID = ms.ID,
+                    MEMBERID = ms.MEMBERID,
+                    BRANCHID = ms.BRANCHID,
+                    membership_type = ms.membership_type,
+                    start_date = ms.start_date,
+                    end_date = ms.end_date,
+                    fee_amount = ms.fee_amount
+                },
+                MemberName = ms.MEMBER.member_first_name + " " + ms.MEMBER.member_last_name,
+                BranchName = ms.BRANCH.branch_name
             })
             .FirstOrDefaultAsync();
 
-        if (membership is null)
+        if (data is null)
         {
             NavigationManager.NavigateTo("notfound");
+            return;
         }
+
+        membership = data.Membership;
+        memberName = data.MemberName ?? "Unknown";
+        branchName = data.BranchName ?? "Unknown";
     }
 
-    private async Task DeleteMEMBERSHIP()
+    private async Task DeleteMembership()
     {
         using var context = DbFactory.CreateDbContext();
         context.MEMBERSHIP.Remove(membership!);

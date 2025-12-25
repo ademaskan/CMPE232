@@ -5,63 +5,124 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Add New Membership - Dance Academy</PageTitle>
 
-<h1>Create</h1>
+<div class="page-header" style="background: linear-gradient(135deg, #d4a259 0%, #b8860b 100%);">
+    <h1><i class="bi bi-plus-circle me-2"></i>Add New Membership</h1>
+    <p>Create a new membership subscription</p>
+</div>
 
-<h2>MEMBERSHIP</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="MEMBERSHIP" OnValidSubmit="AddMEMBERSHIP">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
+<EditForm Model="Membership" OnValidSubmit="AddMembership" FormName="CreateMembership">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="alert alert-danger" role="alert"/>
+    
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-person me-2"></i>Member & Branch</h3>
+        <div class="form-row">
             <div class="mb-3">
-                <label for="memberid" class="form-label">MEMBERID:</label> 
-                <InputNumber id="memberid" @bind-Value="MEMBERSHIP.MEMBERID" class="form-control" /> 
-                <ValidationMessage For="() => MEMBERSHIP.MEMBERID" class="text-danger" /> 
-            </div>        
+                <label for="memberid" class="form-label">Member</label>
+                <InputSelect id="memberid" @bind-Value="Membership.MEMBERID" class="form-control">
+                    <option value="0">Select a member...</option>
+                    @if (members != null)
+                    {
+                        @foreach (var member in members)
+                        {
+                            <option value="@member.ID">@member.member_first_name @member.member_last_name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Membership.MEMBERID" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="branchid" class="form-label">BRANCHID:</label> 
-                <InputNumber id="branchid" @bind-Value="MEMBERSHIP.BRANCHID" class="form-control" /> 
-                <ValidationMessage For="() => MEMBERSHIP.BRANCHID" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="membership_type" class="form-label">membership_type:</label> 
-                <InputText id="membership_type" @bind-Value="MEMBERSHIP.membership_type" class="form-control" /> 
-                <ValidationMessage For="() => MEMBERSHIP.membership_type" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="start_date" class="form-label">start_date:</label> 
-                <InputDate id="start_date" @bind-Value="MEMBERSHIP.start_date" class="form-control" /> 
-                <ValidationMessage For="() => MEMBERSHIP.start_date" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="end_date" class="form-label">end_date:</label> 
-                <InputDate id="end_date" @bind-Value="MEMBERSHIP.end_date" class="form-control" /> 
-                <ValidationMessage For="() => MEMBERSHIP.end_date" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="fee_amount" class="form-label">fee_amount:</label> 
-                <InputNumber id="fee_amount" @bind-Value="MEMBERSHIP.fee_amount" class="form-control" /> 
-                <ValidationMessage For="() => MEMBERSHIP.fee_amount" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+                <label for="branchid" class="form-label">Branch</label>
+                <InputSelect id="branchid" @bind-Value="Membership.BRANCHID" class="form-control">
+                    <option value="0">Select a branch...</option>
+                    @if (branches != null)
+                    {
+                        @foreach (var branch in branches)
+                        {
+                            <option value="@branch.ID">@branch.branch_name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Membership.BRANCHID" class="text-danger" />
+            </div>
+        </div>
     </div>
-</div>
 
-<div>
-    <a href="/memberships">Back to List</a>
-</div>
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-card-list me-2"></i>Membership Details</h3>
+        <div class="form-row">
+            <div class="mb-3">
+                <label for="membership_type" class="form-label">Membership Type</label>
+                <InputSelect id="membership_type" @bind-Value="Membership.membership_type" class="form-control">
+                    <option value="">Select type...</option>
+                    <option value="Basic">Basic</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Premium">Premium</option>
+                    <option value="VIP">VIP</option>
+                </InputSelect>
+                <ValidationMessage For="() => Membership.membership_type" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="fee_amount" class="form-label">Fee Amount</label>
+                <InputNumber id="fee_amount" @bind-Value="Membership.fee_amount" class="form-control" placeholder="0.00" />
+                <ValidationMessage For="() => Membership.fee_amount" class="text-danger" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-calendar-range me-2"></i>Duration</h3>
+        <div class="form-row">
+            <div class="mb-3">
+                <label for="start_date" class="form-label">Start Date</label>
+                <InputDate id="start_date" @bind-Value="Membership.start_date" class="form-control" />
+                <ValidationMessage For="() => Membership.start_date" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="end_date" class="form-label">End Date</label>
+                <InputDate id="end_date" @bind-Value="Membership.end_date" class="form-control" />
+                <ValidationMessage For="() => Membership.end_date" class="text-danger" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i> Create Membership
+        </button>
+        <a href="/memberships" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</EditForm>
 
 @code {
-    private MEMBERSHIP MEMBERSHIP { get; set; } = new();
+    private MEMBERSHIP Membership { get; set; } = new() 
+    { 
+        start_date = DateTime.Today,
+        end_date = DateTime.Today.AddMonths(1)
+    };
 
-    private async Task AddMEMBERSHIP()
+    private List<MEMBER>? members;
+    private List<BRANCH>? branches;
+
+    protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        context.MEMBERSHIP.Add(MEMBERSHIP);
+        members = await context.MEMBER
+            .Select(m => new MEMBER { ID = m.ID, member_first_name = m.member_first_name, member_last_name = m.member_last_name })
+            .ToListAsync();
+        branches = await context.BRANCH
+            .Select(b => new BRANCH { ID = b.ID, branch_name = b.branch_name })
+            .ToListAsync();
+    }
+
+    private async Task AddMembership()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.MEMBERSHIP.Add(Membership);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/memberships");
     }
