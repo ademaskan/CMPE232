@@ -688,3 +688,479 @@ h1:focus {
         padding: 1.25rem;
     }
 }
+
+/* ============================================
+   PAGE HEADER VARIANTS
+   ============================================ */
+
+.page-header-delete {
+    background: linear-gradient(135deg, #ef5350 0%, #c62828 100%);
+}
+
+.page-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+/* ============================================
+   SEARCH BOX
+   ============================================ */
+
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-box svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-500);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.625rem 1rem 0.625rem 2.5rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    background: var(--white);
+    transition: all var(--transition-fast);
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* ============================================
+   TABLE CELL COMPONENTS
+   ============================================ */
+
+.cell-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.cell-content .primary-text {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.cell-content .secondary-text {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+}
+
+.cell-with-avatar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.actions-column {
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* ============================================
+   ICON BUTTONS
+   ============================================ */
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    color: var(--gray-500);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-icon:hover {
+    background: var(--gray-100);
+    color: var(--primary);
+}
+
+.btn-icon-danger:hover {
+    background: #ffebee;
+    color: var(--danger);
+}
+
+/* ============================================
+   FORM CONTAINERS
+   ============================================ */
+
+.form-container,
+.details-container {
+    max-width: 800px;
+}
+
+.details-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 2rem;
+}
+
+.form-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin: 0 0 1.25rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary-light);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.field-validation-error {
+    color: var(--danger);
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+.validation-summary {
+    background: #ffebee;
+    border: 1px solid #ef9a9a;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    color: var(--danger);
+}
+
+.modern-form .form-section {
+    margin-bottom: 1.5rem;
+}
+
+/* ============================================
+   WARNING BOX
+   ============================================ */
+
+.warning-box {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border: 1px solid #ffb74d;
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.warning-box svg {
+    color: #e65100;
+    flex-shrink: 0;
+}
+
+.warning-box strong {
+    color: #e65100;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.warning-box p {
+    margin: 0;
+    color: #bf360c;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   DETAIL GRID (for Details pages)
+   ============================================ */
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: var(--gray-100);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--primary);
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray-500);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.detail-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+/* ============================================
+   FINANCIAL BADGES
+   ============================================ */
+
+.badge-profit {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-loss {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: #ffebee;
+    color: #c62828;
+}
+
+.badge-revenue {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.badge-expenses {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: #fff3e0;
+    color: #e65100;
+}
+
+/* Transaction Type Badges */
+.badge-income {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-expense {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: #ffebee;
+    color: #c62828;
+}
+
+.badge-payment-type {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.badge-refund {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: #fff3e0;
+    color: #e65100;
+}
+
+/* Payment Method Badge */
+.badge-payment {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+/* Status Badges */
+.badge-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+
+.badge-status-active {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-status-expired {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.badge-status-pending {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+/* Position Badges */
+.badge-position {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.badge-position-instructor {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-position-manager {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.badge-position-receptionist {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.badge-position-default {
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+
+/* Capacity Badges */
+.badge-capacity {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.badge-capacity-small {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.badge-capacity-medium {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.badge-capacity-large {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* Description Box */
+.description-box {
+    background: var(--gray-100);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--gray-700);
+    border-left: 3px solid var(--accent);
+}
+
+/* ============================================
+   BUTTON ACTIONS (Page Header & Form)
+   ============================================ */
+
+.page-header .btn-action {
+    width: auto;
+    height: auto;
+    padding: 0.625rem 1.25rem;
+    font-weight: 500;
+    gap: 0.5rem;
+}
+
+.btn-action.btn-primary {
+    background: var(--white);
+    color: var(--primary);
+    border: none;
+}
+
+.btn-action.btn-primary:hover {
+    background: var(--primary-light);
+    transform: translateY(-1px);
+}
+
+.page-header-delete .btn-action.btn-primary {
+    color: var(--danger);
+}
+
+.form-actions .btn-action {
+    width: auto;
+    height: auto;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+}
+
+.form-actions .btn-action.btn-primary {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.form-actions .btn-action.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.form-actions .btn-action.btn-secondary {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+}
+
+.form-actions .btn-action.btn-secondary:hover {
+    background: #e8e8e8;
+}
+
+.form-actions .btn-action.btn-danger {
+    background: var(--danger);
+    color: var(--white);
+    border: none;
+}
+
+.form-actions .btn-action.btn-danger:hover {
+    background: #c62828;
+}

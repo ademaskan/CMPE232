@@ -5,58 +5,136 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Create Financial Record</PageTitle>
 
-<h1>Create</h1>
-
-<h2>FINANCIAL_RECORD</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="FINANCIAL_RECORD" OnValidSubmit="AddFINANCIAL_RECORD">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="branchid" class="form-label">BRANCHID:</label> 
-                <InputNumber id="branchid" @bind-Value="FINANCIAL_RECORD.BRANCHID" class="form-control" /> 
-                <ValidationMessage For="() => FINANCIAL_RECORD.BRANCHID" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="memberid" class="form-label">MEMBERID:</label> 
-                <InputNumber id="memberid" @bind-Value="FINANCIAL_RECORD.MEMBERID" class="form-control" /> 
-                <ValidationMessage For="() => FINANCIAL_RECORD.MEMBERID" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="amount" class="form-label">amount:</label> 
-                <InputNumber id="amount" @bind-Value="FINANCIAL_RECORD.amount" class="form-control" /> 
-                <ValidationMessage For="() => FINANCIAL_RECORD.amount" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="payment_date" class="form-label">payment_date:</label> 
-                <InputDate id="payment_date" @bind-Value="FINANCIAL_RECORD.payment_date" class="form-control" /> 
-                <ValidationMessage For="() => FINANCIAL_RECORD.payment_date" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="payment_method" class="form-label">payment_method:</label> 
-                <InputText id="payment_method" @bind-Value="FINANCIAL_RECORD.payment_method" class="form-control" /> 
-                <ValidationMessage For="() => FINANCIAL_RECORD.payment_method" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="transaction_type" class="form-label">transaction_type:</label> 
-                <InputText id="transaction_type" @bind-Value="FINANCIAL_RECORD.transaction_type" class="form-control" /> 
-                <ValidationMessage For="() => FINANCIAL_RECORD.transaction_type" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+<div class="page-header">
+    <div>
+        <h1>Create Financial Record</h1>
+        <p class="page-subtitle">Add a new payment transaction</p>
     </div>
 </div>
 
-<div>
-    <a href="/financial_records">Back to List</a>
+<div class="form-container">
+    <EditForm Model="FINANCIAL_RECORD" OnValidSubmit="AddFINANCIAL_RECORD" class="modern-form">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="validation-summary" role="alert"/>
+        
+        <div class="form-section">
+            <h3>Transaction Details</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="branchid">Branch</label>
+                    <InputSelect id="branchid" @bind-Value="FINANCIAL_RECORD.BRANCHID" class="form-control">
+                        <option value="0">-- Select Branch --</option>
+                        @if (branches != null)
+                        {
+                            @foreach (var branch in branches)
+                            {
+                                <option value="@branch.ID">@branch.branch_name</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => FINANCIAL_RECORD.BRANCHID" class="field-validation-error" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="memberid">Member (Optional)</label>
+                    <InputSelect id="memberid" @bind-Value="selectedMemberId" class="form-control">
+                        <option value="">-- No Member --</option>
+                        @if (members != null)
+                        {
+                            @foreach (var member in members)
+                            {
+                                <option value="@member.ID">@member.member_first_name @member.member_last_name</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => FINANCIAL_RECORD.MEMBERID" class="field-validation-error" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3>Payment Information</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <InputNumber id="amount" @bind-Value="FINANCIAL_RECORD.amount" class="form-control" placeholder="0.00" />
+                    <ValidationMessage For="() => FINANCIAL_RECORD.amount" class="field-validation-error" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="payment_date">Payment Date</label>
+                    <InputDate id="payment_date" @bind-Value="FINANCIAL_RECORD.payment_date" class="form-control" />
+                    <ValidationMessage For="() => FINANCIAL_RECORD.payment_date" class="field-validation-error" />
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="payment_method">Payment Method</label>
+                    <InputSelect id="payment_method" @bind-Value="FINANCIAL_RECORD.payment_method" class="form-control">
+                        <option value="">-- Select Method --</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Debit Card">Debit Card</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Check">Check</option>
+                        <option value="Online Payment">Online Payment</option>
+                    </InputSelect>
+                    <ValidationMessage For="() => FINANCIAL_RECORD.payment_method" class="field-validation-error" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="transaction_type">Transaction Type</label>
+                    <InputSelect id="transaction_type" @bind-Value="FINANCIAL_RECORD.transaction_type" class="form-control">
+                        <option value="">-- Select Type --</option>
+                        <option value="Income">Income</option>
+                        <option value="Expense">Expense</option>
+                        <option value="Payment">Payment</option>
+                        <option value="Refund">Refund</option>
+                    </InputSelect>
+                    <ValidationMessage For="() => FINANCIAL_RECORD.transaction_type" class="field-validation-error" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <a href="/financial_records" class="btn-action btn-secondary">Cancel</a>
+            <button type="submit" class="btn-action btn-primary">Create Record</button>
+        </div>
+    </EditForm>
 </div>
 
 @code {
-    private FINANCIAL_RECORD FINANCIAL_RECORD { get; set; } = new();
+    private FINANCIAL_RECORD FINANCIAL_RECORD { get; set; } = new() 
+    { 
+        payment_date = DateTime.Today 
+    };
+    
+    private List<BRANCH>? branches;
+    private List<MEMBER>? members;
+
+    private string? selectedMemberId
+    {
+        get => FINANCIAL_RECORD.MEMBERID?.ToString() ?? "";
+        set
+        {
+            if (string.IsNullOrEmpty(value))
+                FINANCIAL_RECORD.MEMBERID = null;
+            else if (int.TryParse(value, out int id))
+                FINANCIAL_RECORD.MEMBERID = id;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        branches = await context.BRANCH.OrderBy(b => b.branch_name).ToListAsync();
+        members = await context.MEMBER.OrderBy(m => m.member_first_name).ThenBy(m => m.member_last_name).ToListAsync();
+    }
 
     private async Task AddFINANCIAL_RECORD()
     {

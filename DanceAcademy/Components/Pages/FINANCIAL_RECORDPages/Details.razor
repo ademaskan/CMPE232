@@ -5,41 +5,76 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Financial Record Details</PageTitle>
 
-<h1>Details</h1>
-
-<div>
-    <h2>FINANCIAL_RECORD</h2>
-    <hr />
-    @if (financial_record is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">BRANCHID</dt>
-            <dd class="col-sm-10">@financial_record.BRANCHID</dd>
-            <dt class="col-sm-2">MEMBERID</dt>
-            <dd class="col-sm-10">@financial_record.MEMBERID</dd>
-            <dt class="col-sm-2">amount</dt>
-            <dd class="col-sm-10">@financial_record.amount</dd>
-            <dt class="col-sm-2">payment_date</dt>
-            <dd class="col-sm-10">@financial_record.payment_date</dd>
-            <dt class="col-sm-2">payment_method</dt>
-            <dd class="col-sm-10">@financial_record.payment_method</dd>
-            <dt class="col-sm-2">transaction_type</dt>
-            <dd class="col-sm-10">@financial_record.transaction_type</dd>
-        </dl>
-        <div>
-            <a href="@($"/financial_records/edit?id={financial_record.ID}")">Edit</a> |
-            <a href="@($"/financial_records")">Back to List</a>
-        </div>
-    }
+<div class="page-header">
+    <div>
+        <h1>Financial Record Details</h1>
+        <p class="page-subtitle">View payment transaction information</p>
+    </div>
 </div>
+
+@if (financial_record is null)
+{
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading record...</p>
+    </div>
+}
+else
+{
+    <div class="details-container">
+        <div class="details-card">
+            <div class="form-section">
+                <h3>Transaction Details</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Branch</span>
+                        <span class="detail-value">@branchName</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Member</span>
+                        <span class="detail-value">@(memberName ?? "N/A")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Transaction Type</span>
+                        <span class="@GetTransactionBadgeClass(financial_record.transaction_type)">@financial_record.transaction_type</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3>Payment Information</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Amount</span>
+                        <span class="@GetAmountBadgeClass(financial_record.transaction_type)">
+                            @FormatCurrency(financial_record.amount, financial_record.transaction_type)
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Payment Date</span>
+                        <span class="detail-value">@financial_record.payment_date.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Payment Method</span>
+                        <span class="badge-payment">@financial_record.payment_method</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <a href="/financial_records" class="btn-action btn-secondary">Back to List</a>
+                <a href="@($"/financial_records/edit?id={financial_record.ID}")" class="btn-action btn-primary">Edit Record</a>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
     private FINANCIAL_RECORD? financial_record;
+    private string? branchName;
+    private string? memberName;
 
     [SupplyParameterFromQuery]
     private int ID { get; set; }
@@ -47,23 +82,54 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        financial_record = await context.FINANCIAL_RECORD
+        
+        var data = await context.FINANCIAL_RECORD
             .Where(fr => fr.ID == ID)
-            .Select(fr => new FINANCIAL_RECORD
+            .Select(fr => new 
             {
-                ID = fr.ID,
-                BRANCHID = fr.BRANCHID,
-                MEMBERID = fr.MEMBERID,
-                amount = fr.amount,
-                payment_date = fr.payment_date,
-                payment_method = fr.payment_method,
-                transaction_type = fr.transaction_type
+                Record = fr,
+                BranchName = fr.BRANCH.branch_name,
+                MemberName = fr.MEMBER != null ? fr.MEMBER.member_first_name + " " + fr.MEMBER.member_last_name : null
             })
             .FirstOrDefaultAsync();
 
-        if (financial_record is null)
+        if (data is null)
         {
             NavigationManager.NavigateTo("notfound");
+            return;
         }
+
+        financial_record = data.Record;
+        branchName = data.BranchName;
+        memberName = data.MemberName;
+    }
+
+    private string FormatCurrency(decimal amount, string transactionType)
+    {
+        var prefix = transactionType?.ToLower() == "expense" ? "-" : "+";
+        return $"{prefix}${amount:N2}";
+    }
+
+    private string GetAmountBadgeClass(string transactionType)
+    {
+        return transactionType?.ToLower() switch
+        {
+            "expense" => "badge-loss",
+            "income" => "badge-profit",
+            "payment" => "badge-profit",
+            _ => "badge-revenue"
+        };
+    }
+
+    private string GetTransactionBadgeClass(string transactionType)
+    {
+        return transactionType?.ToLower() switch
+        {
+            "expense" => "badge-expense",
+            "income" => "badge-income",
+            "payment" => "badge-payment-type",
+            "refund" => "badge-refund",
+            _ => "badge-status"
+        };
     }
 }

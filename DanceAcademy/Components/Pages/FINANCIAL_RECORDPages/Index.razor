@@ -7,47 +7,232 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Financial Records</PageTitle>
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1>Financial Records</h1>
+        <p class="page-subtitle">Manage payment transactions and financial data</p>
+    </div>
+    <a href="financial_records/create" class="btn-action btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add Record
+    </a>
+</div>
 
-<p>
-    <a href="financial_records/create">Create New</a>
-</p>
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="search-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" placeholder="Search by branch, member, or payment method..." @bind="searchTerm" @bind:event="oninput" @bind:after="OnSearchChanged" />
+        </div>
+    </div>
 
-<QuickGrid Class="table" Items="FinancialRecords">
-    <PropertyColumn Property="financial_record => financial_record.BRANCHID" />
-    <PropertyColumn Property="financial_record => financial_record.MEMBERID" />
-    <PropertyColumn Property="financial_record => financial_record.amount" />
-    <PropertyColumn Property="financial_record => financial_record.payment_date" />
-    <PropertyColumn Property="financial_record => financial_record.payment_method" />
-    <PropertyColumn Property="financial_record => financial_record.transaction_type" />
-
-    <TemplateColumn Context="financial_record">
-        <a href="@($"financial_records/edit?id={financial_record.ID}")">Edit</a> |
-        <a href="@($"financial_records/details?id={financial_record.ID}")">Details</a> |
-        <a href="@($"financial_records/delete?id={financial_record.ID}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+    @if (isLoading)
+    {
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading records...</p>
+        </div>
+    }
+    else if (financialRecords == null || !financialRecords.Any())
+    {
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+            <h3>No financial records found</h3>
+            <p>Start by adding your first financial record.</p>
+        </div>
+    }
+    else
+    {
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Branch</th>
+                    <th>Member</th>
+                    <th style="min-width: 130px; padding-right: 24px;">Amount</th>
+                    <th>Date</th>
+                    <th>Payment Method</th>
+                    <th>Transaction Type</th>
+                    <th class="actions-column">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var record in financialRecords)
+                {
+                    <tr>
+                        <td>
+                            <div class="cell-content">
+                                <span class="primary-text">@TruncateText(record.BranchName, 25)</span>
+                            </div>
+                        </td>
+                        <td>
+                            @if (record.MemberName != null)
+                            {
+                                <div class="cell-with-avatar">
+                                    <div class="member-avatar">@GetInitials(record.MemberName)</div>
+                                    <span>@TruncateText(record.MemberName, 20)</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-muted">N/A</span>
+                            }
+                        </td>
+                        <td style="min-width: 130px; padding-right: 24px;">
+                            <span class="@GetAmountBadgeClass(record.TransactionType)">
+                                @FormatCurrency(record.Amount, record.TransactionType)
+                            </span>
+                        </td>
+                        <td>@record.PaymentDate.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <span class="badge-payment">@record.PaymentMethod</span>
+                        </td>
+                        <td>
+                            <span class="@GetTransactionBadgeClass(record.TransactionType)">@record.TransactionType</span>
+                        </td>
+                        <td class="actions-column">
+                            <a href="@($"financial_records/edit?id={record.ID}")" class="btn-icon" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                </svg>
+                            </a>
+                            <a href="@($"financial_records/details?id={record.ID}")" class="btn-icon" title="Details">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </a>
+                            <a href="@($"financial_records/delete?id={record.ID}")" class="btn-icon btn-icon-danger" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 
 @code {
     private DanceAcademyContext context = default!;
+    private List<FinancialRecordViewModel>? financialRecords;
+    private string searchTerm = "";
+    private bool isLoading = true;
 
-    private IQueryable<FINANCIAL_RECORD> FinancialRecords => 
-        context.FINANCIAL_RECORD.Select(fr => new FINANCIAL_RECORD 
-        { 
-            ID = fr.ID, 
-            BRANCHID = fr.BRANCHID, 
-            MEMBERID = fr.MEMBERID,
-            amount = fr.amount,
-            payment_date = fr.payment_date,
-            payment_method = fr.payment_method,
-            transaction_type = fr.transaction_type
-        });
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         context = DbFactory.CreateDbContext();
+        await LoadRecords();
+    }
+
+    private async Task LoadRecords()
+    {
+        isLoading = true;
+        
+        var query = context.FINANCIAL_RECORD
+            .Include(fr => fr.BRANCH)
+            .Include(fr => fr.MEMBER)
+            .AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = $"%{searchTerm}%";
+            query = query.Where(fr => 
+                EF.Functions.Like(fr.BRANCH.branch_name, term) ||
+                (fr.MEMBER != null && EF.Functions.Like(fr.MEMBER.member_first_name + " " + fr.MEMBER.member_last_name, term)) ||
+                EF.Functions.Like(fr.payment_method, term) ||
+                EF.Functions.Like(fr.transaction_type, term));
+        }
+
+        financialRecords = await query
+            .OrderByDescending(fr => fr.payment_date)
+            .Select(fr => new FinancialRecordViewModel
+            {
+                ID = fr.ID,
+                BranchName = fr.BRANCH.branch_name,
+                MemberName = fr.MEMBER != null ? fr.MEMBER.member_first_name + " " + fr.MEMBER.member_last_name : null,
+                Amount = fr.amount,
+                PaymentDate = fr.payment_date,
+                PaymentMethod = fr.payment_method,
+                TransactionType = fr.transaction_type
+            })
+            .ToListAsync();
+
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task OnSearchChanged()
+    {
+        await LoadRecords();
+    }
+
+    private string GetInitials(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return "?";
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length >= 2)
+            return $"{parts[0][0]}{parts[1][0]}".ToUpper();
+        return name.Length >= 2 ? name.Substring(0, 2).ToUpper() : name.ToUpper();
+    }
+
+    private string TruncateText(string? text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text)) return "";
+        return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
+    }
+
+    private string FormatCurrency(decimal amount, string transactionType)
+    {
+        var prefix = transactionType?.ToLower() == "expense" ? "-" : "+";
+        return $"{prefix}${amount:N2}";
+    }
+
+    private string GetAmountBadgeClass(string transactionType)
+    {
+        return transactionType?.ToLower() switch
+        {
+            "expense" => "badge-loss",
+            "income" => "badge-profit",
+            "payment" => "badge-profit",
+            _ => "badge-revenue"
+        };
+    }
+
+    private string GetTransactionBadgeClass(string transactionType)
+    {
+        return transactionType?.ToLower() switch
+        {
+            "expense" => "badge-expense",
+            "income" => "badge-income",
+            "payment" => "badge-payment-type",
+            "refund" => "badge-refund",
+            _ => "badge-status"
+        };
+    }
+
+    private class FinancialRecordViewModel
+    {
+        public int ID { get; set; }
+        public string BranchName { get; set; } = "";
+        public string? MemberName { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public string PaymentMethod { get; set; } = "";
+        public string TransactionType { get; set; } = "";
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
