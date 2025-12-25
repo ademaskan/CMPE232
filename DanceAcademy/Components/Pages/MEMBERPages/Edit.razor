@@ -5,84 +5,113 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Edit</PageTitle>
+<PageTitle>Edit Member - Dance Academy</PageTitle>
 
-<h1>Edit</h1>
+<div class="page-header">
+    <h1><i class="bi bi-person-gear me-2"></i>Edit Member</h1>
+    <p>Update member information</p>
+</div>
 
-<h2>MEMBER</h2>
-<hr />
-@if (MEMBER is null)
+@if (Member is null)
 {
-    <p><em>Loading...</em></p>
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading member details...</span>
+    </div>
 }
 else
 {
-    <div class="row">
-        <div class="col-md-4">
-            <EditForm Model="MEMBER" OnValidSubmit="UpdateMEMBER">
-                <DataAnnotationsValidator />
-                <ValidationSummary role="alert"/>
-                <input type="hidden" name="MEMBER.ID" value="@MEMBER.ID" />
+    <EditForm Model="Member" OnValidSubmit="UpdateMember" FormName="EditMember">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="alert alert-danger" role="alert"/>
+        <input type="hidden" name="Member.ID" value="@Member.ID" />
+        
+        <div class="form-section">
+            <h3 class="form-section-title"><i class="bi bi-person me-2"></i>Personal Information</h3>
+            <div class="form-row">
                 <div class="mb-3">
-                    <label for="member_first_name" class="form-label">member_first_name:</label>
-                    <InputText id="member_first_name" @bind-Value="MEMBER.member_first_name" class="form-control" />
-                    <ValidationMessage For="() => MEMBER.member_first_name" class="text-danger" />
+                    <label for="member_first_name" class="form-label">First Name</label>
+                    <InputText id="member_first_name" @bind-Value="Member.member_first_name" class="form-control" placeholder="Enter first name" />
+                    <ValidationMessage For="() => Member.member_first_name" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="member_last_name" class="form-label">member_last_name:</label>
-                    <InputText id="member_last_name" @bind-Value="MEMBER.member_last_name" class="form-control" />
-                    <ValidationMessage For="() => MEMBER.member_last_name" class="text-danger" />
+                    <label for="member_last_name" class="form-label">Last Name</label>
+                    <InputText id="member_last_name" @bind-Value="Member.member_last_name" class="form-control" placeholder="Enter last name" />
+                    <ValidationMessage For="() => Member.member_last_name" class="text-danger" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="mb-3">
+                    <label for="date_of_birth" class="form-label">Date of Birth</label>
+                    <InputDate id="date_of_birth" @bind-Value="Member.date_of_birth" class="form-control" />
+                    <ValidationMessage For="() => Member.date_of_birth" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="member_email" class="form-label">member_email:</label>
-                    <InputText id="member_email" @bind-Value="MEMBER.member_email" class="form-control" />
-                    <ValidationMessage For="() => MEMBER.member_email" class="text-danger" />
+                    <label for="member_gender" class="form-label">Gender</label>
+                    <InputSelect id="member_gender" @bind-Value="Member.member_gender" class="form-control">
+                        <option value="">Select gender...</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="Other">Other</option>
+                    </InputSelect>
+                    <ValidationMessage For="() => Member.member_gender" class="text-danger" />
                 </div>
-                <div class="mb-3">
-                    <label for="member_phone_number" class="form-label">member_phone_number:</label>
-                    <InputText id="member_phone_number" @bind-Value="MEMBER.member_phone_number" class="form-control" />
-                    <ValidationMessage For="() => MEMBER.member_phone_number" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="member_address" class="form-label">member_address:</label>
-                    <InputText id="member_address" @bind-Value="MEMBER.member_address" class="form-control" />
-                    <ValidationMessage For="() => MEMBER.member_address" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="date_of_birth" class="form-label">date_of_birth:</label>
-                    <InputDate id="date_of_birth" @bind-Value="MEMBER.date_of_birth" class="form-control" />
-                    <ValidationMessage For="() => MEMBER.date_of_birth" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="member_gender" class="form-label">member_gender:</label>
-                    <InputText id="member_gender" @bind-Value="MEMBER.member_gender" class="form-control" />
-                    <ValidationMessage For="() => MEMBER.member_gender" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="member_join_date" class="form-label">member_join_date:</label>
-                    <InputDate id="member_join_date" @bind-Value="MEMBER.member_join_date" class="form-control" />
-                    <ValidationMessage For="() => MEMBER.member_join_date" class="text-danger" />
-                </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </EditForm>
+            </div>
         </div>
-    </div>
-}
 
-<div>
-    <a href="/members">Back to List</a>
-</div>
+        <div class="form-section">
+            <h3 class="form-section-title"><i class="bi bi-envelope me-2"></i>Contact Information</h3>
+            <div class="form-row">
+                <div class="mb-3">
+                    <label for="member_email" class="form-label">Email Address</label>
+                    <InputText id="member_email" @bind-Value="Member.member_email" class="form-control" placeholder="email@example.com" type="email" />
+                    <ValidationMessage For="() => Member.member_email" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="member_phone_number" class="form-label">Phone Number</label>
+                    <InputText id="member_phone_number" @bind-Value="Member.member_phone_number" class="form-control" placeholder="+1 (555) 123-4567" />
+                    <ValidationMessage For="() => Member.member_phone_number" class="text-danger" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="member_address" class="form-label">Address</label>
+                <InputText id="member_address" @bind-Value="Member.member_address" class="form-control" placeholder="Enter full address" />
+                <ValidationMessage For="() => Member.member_address" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="form-section-title"><i class="bi bi-calendar-check me-2"></i>Membership</h3>
+            <div class="form-row">
+                <div class="mb-3">
+                    <label for="member_join_date" class="form-label">Join Date</label>
+                    <InputDate id="member_join_date" @bind-Value="Member.member_join_date" class="form-control" />
+                    <ValidationMessage For="() => Member.member_join_date" class="text-danger" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i> Save Changes
+            </button>
+            <a href="/members" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </EditForm>
+}
 
 @code {
     [SupplyParameterFromQuery]
     private int ID { get; set; }
 
-    private MEMBER? MEMBER { get; set; }
+    private MEMBER? Member { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        MEMBER = await context.MEMBER
+        Member = await context.MEMBER
             .Where(m => m.ID == ID)
             .Select(m => new MEMBER
             {
@@ -98,18 +127,16 @@ else
             })
             .FirstOrDefaultAsync();
 
-        if (MEMBER is null)
+        if (Member is null)
         {
             NavigationManager.NavigateTo("notfound");
         }
     }
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task UpdateMEMBER()
+    private async Task UpdateMember()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Attach(MEMBER!).State = EntityState.Modified;
+        context.Attach(Member!).State = EntityState.Modified;
 
         try
         {
@@ -117,7 +144,7 @@ else
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!MEMBERExists(MEMBER!.ID))
+            if (!MemberExists(Member!.ID))
             {
                 NavigationManager.NavigateTo("notfound");
             }
@@ -130,7 +157,7 @@ else
         NavigationManager.NavigateTo("/members");
     }
 
-    private bool MEMBERExists(int id)
+    private bool MemberExists(int id)
     {
         using var context = DbFactory.CreateDbContext();
         return context.MEMBER.Any(e => e.ID == id);

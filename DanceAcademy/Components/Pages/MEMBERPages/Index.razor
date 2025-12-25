@@ -1,4 +1,5 @@
 ﻿@page "/members"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using DataAccess
@@ -6,52 +7,192 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Members - Dance Academy</PageTitle>
 
-<h1>Index</h1>
+<div class="page-header">
+    <h1><i class="bi bi-people-fill me-2"></i>Members</h1>
+    <p>Manage your dance academy members</p>
+    <div class="page-header-actions">
+        <a href="members/create" class="btn btn-light">
+            <i class="bi bi-plus-lg"></i> Add New Member
+        </a>
+    </div>
+</div>
 
-<p>
-    <a href="members/create">Create New</a>
-</p>
-
-<QuickGrid Class="table" Items="Members">
-    <PropertyColumn Property="member => member.member_first_name" />
-    <PropertyColumn Property="member => member.member_last_name" />
-    <PropertyColumn Property="member => member.member_email" />
-    <PropertyColumn Property="member => member.member_phone_number" />
-    <PropertyColumn Property="member => member.member_address" />
-    <PropertyColumn Property="member => member.date_of_birth" />
-    <PropertyColumn Property="member => member.member_gender" />
-    <PropertyColumn Property="member => member.member_join_date" />
-
-    <TemplateColumn Context="member">
-        <a href="@($"members/edit?id={member.ID}")">Edit</a> |
-        <a href="@($"members/details?id={member.ID}")">Details</a> |
-        <a href="@($"members/delete?id={member.ID}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="table-search">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search members..." @bind="searchTerm" @bind:event="oninput" @bind:after="OnSearchChanged" />
+        </div>
+        <div class="text-muted">
+            @if (memberCount > 0)
+            {
+                <span>@memberCount member(s) found</span>
+            }
+        </div>
+    </div>
+    
+    @if (members == null)
+    {
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <span>Loading members...</span>
+        </div>
+    }
+    else if (!members.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="empty-state-title">No members yet</div>
+            <p class="empty-state-text">Get started by adding your first member to the academy.</p>
+            <a href="members/create" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add First Member
+            </a>
+        </div>
+    }
+    else
+    {
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Member</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Date of Birth</th>
+                    <th>Gender</th>
+                    <th>Join Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var member in members)
+                {
+                    <tr>
+                        <td>
+                            <div class="member-name">
+                                <div class="member-avatar">
+                                    @GetInitials(member.member_first_name, member.member_last_name)
+                                </div>
+                                <div class="member-info">
+                                    <span class="member-fullname">@member.member_first_name @member.member_last_name</span>
+                                    <span class="member-email">@member.member_email</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>@member.member_phone_number</td>
+                        <td>@TruncateText(member.member_address, 30)</td>
+                        <td>@member.date_of_birth.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <span class="badge-gender @GetGenderBadgeClass(member.member_gender)">
+                                @FormatGender(member.member_gender)
+                            </span>
+                        </td>
+                        <td>@member.member_join_date.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="@($"members/details?id={member.ID}")" class="btn-action btn-action-view" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@($"members/edit?id={member.ID}")" class="btn-action btn-action-edit" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="@($"members/delete?id={member.ID}")" class="btn-action btn-action-delete" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 
 @code {
     private DanceAcademyContext context = default!;
-    
-    private IQueryable<MEMBER> Members => 
-        context.MEMBER.Select(m => new MEMBER 
-        { 
-            ID = m.ID, 
-            member_first_name = m.member_first_name, 
-            member_last_name = m.member_last_name,
-            member_email = m.member_email,
-            member_phone_number = m.member_phone_number,
-            member_address = m.member_address,
-            date_of_birth = m.date_of_birth,
-            member_gender = m.member_gender,
-            member_join_date = m.member_join_date
-            // Navigation properties COURSE_ENROLLMENT, FINANCIAL_RECORD, MEMBERSHIPs are intentionally excluded
-        });
+    private List<MEMBER>? members;
+    private int memberCount;
+    private string searchTerm = "";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         context = DbFactory.CreateDbContext();
+        await LoadMembers();
+    }
+
+    private async Task OnSearchChanged()
+    {
+        await LoadMembers();
+    }
+
+    private async Task LoadMembers()
+    {
+        var query = context.MEMBER.AsQueryable();
+        
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = searchTerm.ToLower();
+            query = query.Where(m => 
+                (m.member_first_name != null && m.member_first_name.ToLower().Contains(term)) ||
+                (m.member_last_name != null && m.member_last_name.ToLower().Contains(term)) ||
+                (m.member_email != null && m.member_email.ToLower().Contains(term)) ||
+                (m.member_phone_number != null && m.member_phone_number.Contains(term)));
+        }
+        
+        members = await query
+            .Select(m => new MEMBER 
+            { 
+                ID = m.ID, 
+                member_first_name = m.member_first_name, 
+                member_last_name = m.member_last_name,
+                member_email = m.member_email,
+                member_phone_number = m.member_phone_number,
+                member_address = m.member_address,
+                date_of_birth = m.date_of_birth,
+                member_gender = m.member_gender,
+                member_join_date = m.member_join_date
+            })
+            .ToListAsync();
+            
+        memberCount = members.Count;
+    }
+
+    private string GetInitials(string? firstName, string? lastName)
+    {
+        var first = !string.IsNullOrEmpty(firstName) ? firstName[0].ToString().ToUpper() : "";
+        var last = !string.IsNullOrEmpty(lastName) ? lastName[0].ToString().ToUpper() : "";
+        return first + last;
+    }
+
+    private string TruncateText(string? text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text)) return "-";
+        return text.Length <= maxLength ? text : text.Substring(0, maxLength) + "...";
+    }
+
+    private string GetGenderBadgeClass(string? gender)
+    {
+        return gender?.ToUpper() switch
+        {
+            "M" or "MALE" => "badge-gender-m",
+            "F" or "FEMALE" => "badge-gender-f",
+            _ => "badge-gender-other"
+        };
+    }
+
+    private string FormatGender(string? gender)
+    {
+        return gender?.ToUpper() switch
+        {
+            "M" => "Male",
+            "F" => "Female",
+            "MALE" => "Male",
+            "FEMALE" => "Female",
+            _ => gender ?? "-"
+        };
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
