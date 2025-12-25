@@ -5,63 +5,82 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Add New Branch - Dance Academy</PageTitle>
 
-<h1>Create</h1>
+<div class="page-header">
+    <h1><i class="bi bi-plus-circle me-2"></i>Add New Branch</h1>
+    <p>Create a new branch location</p>
+</div>
 
-<h2>BRANCH</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="BRANCH" OnValidSubmit="AddBRANCH">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
+<EditForm Model="Branch" OnValidSubmit="AddBranch" FormName="CreateBranch">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="alert alert-danger" role="alert"/>
+    
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-building me-2"></i>Branch Information</h3>
+        <div class="form-row">
             <div class="mb-3">
-                <label for="branch_name" class="form-label">branch_name:</label> 
-                <InputText id="branch_name" @bind-Value="BRANCH.branch_name" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH.branch_name" class="text-danger" /> 
-            </div>        
+                <label for="branch_name" class="form-label">Branch Name</label>
+                <InputText id="branch_name" @bind-Value="Branch.branch_name" class="form-control" placeholder="Enter branch name" />
+                <ValidationMessage For="() => Branch.branch_name" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="branch_city" class="form-label">branch_city:</label> 
-                <InputText id="branch_city" @bind-Value="BRANCH.branch_city" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH.branch_city" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="branch_address" class="form-label">branch_address:</label> 
-                <InputText id="branch_address" @bind-Value="BRANCH.branch_address" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH.branch_address" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="branch_district" class="form-label">branch_district:</label> 
-                <InputText id="branch_district" @bind-Value="BRANCH.branch_district" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH.branch_district" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="branch_contact_number" class="form-label">branch_contact_number:</label> 
-                <InputText id="branch_contact_number" @bind-Value="BRANCH.branch_contact_number" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH.branch_contact_number" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="branch_capacity" class="form-label">branch_capacity:</label> 
-                <InputNumber id="branch_capacity" @bind-Value="BRANCH.branch_capacity" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH.branch_capacity" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+                <label for="branch_capacity" class="form-label">Capacity</label>
+                <InputNumber id="branch_capacity" @bind-Value="Branch.branch_capacity" class="form-control" placeholder="Maximum capacity" />
+                <ValidationMessage For="() => Branch.branch_capacity" class="text-danger" />
+            </div>
+        </div>
     </div>
-</div>
 
-<div>
-    <a href="/branches">Back to List</a>
-</div>
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-geo-alt me-2"></i>Location</h3>
+        <div class="form-row">
+            <div class="mb-3">
+                <label for="branch_city" class="form-label">City</label>
+                <InputText id="branch_city" @bind-Value="Branch.branch_city" class="form-control" placeholder="Enter city" />
+                <ValidationMessage For="() => Branch.branch_city" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="branch_district" class="form-label">District</label>
+                <InputText id="branch_district" @bind-Value="Branch.branch_district" class="form-control" placeholder="Enter district" />
+                <ValidationMessage For="() => Branch.branch_district" class="text-danger" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="branch_address" class="form-label">Full Address</label>
+            <InputText id="branch_address" @bind-Value="Branch.branch_address" class="form-control" placeholder="Enter complete address" />
+            <ValidationMessage For="() => Branch.branch_address" class="text-danger" />
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-telephone me-2"></i>Contact</h3>
+        <div class="form-row">
+            <div class="mb-3">
+                <label for="branch_contact_number" class="form-label">Contact Number</label>
+                <InputText id="branch_contact_number" @bind-Value="Branch.branch_contact_number" class="form-control" placeholder="+1 (555) 123-4567" />
+                <ValidationMessage For="() => Branch.branch_contact_number" class="text-danger" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i> Create Branch
+        </button>
+        <a href="/branches" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</EditForm>
 
 @code {
-    private BRANCH BRANCH { get; set; } = new();
+    private BRANCH Branch { get; set; } = new();
 
-    private async Task AddBRANCH()
+    private async Task AddBranch()
     {
         using var context = DbFactory.CreateDbContext();
-        context.BRANCH.Add(BRANCH);
+        context.BRANCH.Add(Branch);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/branches");
     }

@@ -5,38 +5,90 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Branch Details - Dance Academy</PageTitle>
 
-<h1>Details</h1>
-
-<div>
-    <h2>BRANCH</h2>
-    <hr />
-    @if (branch is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">branch_name</dt>
-            <dd class="col-sm-10">@branch.branch_name</dd>
-            <dt class="col-sm-2">branch_city</dt>
-            <dd class="col-sm-10">@branch.branch_city</dd>
-            <dt class="col-sm-2">branch_address</dt>
-            <dd class="col-sm-10">@branch.branch_address</dd>
-            <dt class="col-sm-2">branch_district</dt>
-            <dd class="col-sm-10">@branch.branch_district</dd>
-            <dt class="col-sm-2">branch_contact_number</dt>
-            <dd class="col-sm-10">@branch.branch_contact_number</dd>
-            <dt class="col-sm-2">branch_capacity</dt>
-            <dd class="col-sm-10">@branch.branch_capacity</dd>
-        </dl>
-        <div>
-            <a href="@($"/branches/edit?id={branch.ID}")">Edit</a> |
-            <a href="@($"/branches")">Back to List</a>
-        </div>
-    }
+<div class="page-header">
+    <h1><i class="bi bi-building me-2"></i>Branch Details</h1>
+    <p>View complete branch information</p>
 </div>
+
+@if (branch is null)
+{
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading branch details...</span>
+    </div>
+}
+else
+{
+    <div class="content-card">
+        <div class="content-card-header">
+            <div>
+                <h2 class="content-card-title mb-0">@branch.branch_name</h2>
+                <span class="text-muted">Branch ID: @branch.ID</span>
+            </div>
+            @if (branch.branch_capacity.HasValue)
+            {
+                <span class="badge-capacity" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                    Capacity: @branch.branch_capacity
+                </span>
+            }
+        </div>
+        
+        <h4 class="form-section-title"><i class="bi bi-geo-alt me-2"></i>Location</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">City</div>
+                <div class="detail-value">@(branch.branch_city ?? "-")</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">District</div>
+                <div class="detail-value">@(branch.branch_district ?? "-")</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Full Address</div>
+                <div class="detail-value">@(branch.branch_address ?? "-")</div>
+            </div>
+        </div>
+
+        <h4 class="form-section-title"><i class="bi bi-telephone me-2"></i>Contact</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">Contact Number</div>
+                <div class="detail-value">@(branch.branch_contact_number ?? "-")</div>
+            </div>
+        </div>
+
+        <h4 class="form-section-title"><i class="bi bi-info-circle me-2"></i>Capacity</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">Maximum Capacity</div>
+                <div class="detail-value">@(branch.branch_capacity?.ToString() ?? "-") people</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="@($"/branches/edit?id={branch.ID}")" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Edit Branch
+        </a>
+        <a href="/branches" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+}
+
+<style>
+    .badge-capacity {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+</style>
 
 @code {
     private BRANCH? branch;
