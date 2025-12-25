@@ -7,48 +7,195 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Employees - Dance Academy</PageTitle>
 
-<h1>Index</h1>
+<div class="page-header">
+    <h1><i class="bi bi-person-badge me-2"></i>Employees</h1>
+    <p>Manage dance academy staff</p>
+    <div class="page-header-actions">
+        <a href="employees/create" class="btn btn-light">
+            <i class="bi bi-plus-lg"></i> Add New Employee
+        </a>
+    </div>
+</div>
 
-<p>
-    <a href="employees/create">Create New</a>
-</p>
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="table-search">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search employees..." @bind="searchTerm" @bind:event="oninput" @bind:after="OnSearchChanged" />
+        </div>
+        <div class="text-muted">
+            @if (employeeCount > 0)
+            {
+                <span>@employeeCount employee(s) found</span>
+            }
+        </div>
+    </div>
+    
+    @if (employees == null)
+    {
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <span>Loading employees...</span>
+        </div>
+    }
+    else if (!employees.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-person-badge"></i>
+            </div>
+            <div class="empty-state-title">No employees yet</div>
+            <p class="empty-state-text">Get started by adding your first employee.</p>
+            <a href="employees/create" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add First Employee
+            </a>
+        </div>
+    }
+    else
+    {
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Position</th>
+                    <th>Branch</th>
+                    <th>Hire Date</th>
+                    <th>Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var emp in employees)
+                {
+                    <tr>
+                        <td>
+                            <div class="member-name">
+                                <div class="member-avatar">
+                                    @GetInitials(emp.employee_first_name, emp.employee_last_name)
+                                </div>
+                                <div class="member-info">
+                                    <span class="member-fullname">@emp.employee_first_name @emp.employee_last_name</span>
+                                    <span class="member-email">ID: @emp.ID</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-position">@(emp.position ?? "-")</span>
+                        </td>
+                        <td>@(emp.BranchName ?? "-")</td>
+                        <td>@emp.hire_date.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            @if (emp.salary.HasValue)
+                            {
+                                <strong>@emp.salary.Value.ToString("C")</strong>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="@($"employees/details?id={emp.ID}")" class="btn-action btn-action-view" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@($"employees/edit?id={emp.ID}")" class="btn-action btn-action-edit" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="@($"employees/delete?id={emp.ID}")" class="btn-action btn-action-delete" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 
-<QuickGrid Class="table" Items="Employees">
-    <PropertyColumn Property="employee => employee.employee_first_name" />
-    <PropertyColumn Property="employee => employee.employee_last_name" />
-    <PropertyColumn Property="employee => employee.position" />
-    <PropertyColumn Property="employee => employee.hire_date" />
-    <PropertyColumn Property="employee => employee.salary" />
-    <PropertyColumn Property="employee => employee.BRANCHID" />
-
-    <TemplateColumn Context="employee">
-        <a href="@($"employees/edit?id={employee.ID}")">Edit</a> |
-        <a href="@($"employees/details?id={employee.ID}")">Details</a> |
-        <a href="@($"employees/delete?id={employee.ID}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+<style>
+    .badge-position {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        background: #e3f2fd;
+        color: #1565c0;
+    }
+</style>
 
 @code {
     private DanceAcademyContext context = default!;
+    private List<EmployeeViewModel>? employees;
+    private int employeeCount;
+    private string searchTerm = "";
 
-    private IQueryable<EMPLOYEE> Employees => 
-        context.EMPLOYEE.Select(e => new EMPLOYEE 
-        { 
-            ID = e.ID, 
-            employee_first_name = e.employee_first_name, 
-            employee_last_name = e.employee_last_name,
-            position = e.position,
-            hire_date = e.hire_date,
-            salary = e.salary,
-            BRANCHID = e.BRANCHID
-        });
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         context = DbFactory.CreateDbContext();
+        await LoadEmployees();
+    }
+
+    private async Task OnSearchChanged()
+    {
+        await LoadEmployees();
+    }
+
+    private async Task LoadEmployees()
+    {
+        var query = context.EMPLOYEE
+            .Include(e => e.BRANCH)
+            .AsQueryable();
+        
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = searchTerm.ToLower();
+            query = query.Where(e => 
+                (e.employee_first_name != null && e.employee_first_name.ToLower().Contains(term)) ||
+                (e.employee_last_name != null && e.employee_last_name.ToLower().Contains(term)) ||
+                (e.position != null && e.position.ToLower().Contains(term)) ||
+                (e.BRANCH != null && e.BRANCH.branch_name != null && e.BRANCH.branch_name.ToLower().Contains(term)));
+        }
+        
+        employees = await query
+            .Select(e => new EmployeeViewModel 
+            { 
+                ID = e.ID, 
+                employee_first_name = e.employee_first_name, 
+                employee_last_name = e.employee_last_name,
+                position = e.position,
+                hire_date = e.hire_date,
+                salary = e.salary,
+                BRANCHID = e.BRANCHID,
+                BranchName = e.BRANCH != null ? e.BRANCH.branch_name : null
+            })
+            .ToListAsync();
+            
+        employeeCount = employees.Count;
+    }
+
+    private string GetInitials(string? firstName, string? lastName)
+    {
+        var first = !string.IsNullOrEmpty(firstName) ? firstName[0].ToString().ToUpper() : "";
+        var last = !string.IsNullOrEmpty(lastName) ? lastName[0].ToString().ToUpper() : "";
+        return first + last;
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
+
+    private class EmployeeViewModel
+    {
+        public int ID { get; set; }
+        public string? employee_first_name { get; set; }
+        public string? employee_last_name { get; set; }
+        public string? position { get; set; }
+        public DateTime hire_date { get; set; }
+        public decimal? salary { get; set; }
+        public int? BRANCHID { get; set; }
+        public string? BranchName { get; set; }
+    }
 }

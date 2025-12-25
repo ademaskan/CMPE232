@@ -5,63 +5,100 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Add New Employee - Dance Academy</PageTitle>
 
-<h1>Create</h1>
+<div class="page-header">
+    <h1><i class="bi bi-person-plus me-2"></i>Add New Employee</h1>
+    <p>Add a new staff member to the academy</p>
+</div>
 
-<h2>EMPLOYEE</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="EMPLOYEE" OnValidSubmit="AddEMPLOYEE">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
+<EditForm Model="Employee" OnValidSubmit="AddEmployee" FormName="CreateEmployee">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="alert alert-danger" role="alert"/>
+    
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-person me-2"></i>Personal Information</h3>
+        <div class="form-row">
             <div class="mb-3">
-                <label for="employee_first_name" class="form-label">employee_first_name:</label> 
-                <InputText id="employee_first_name" @bind-Value="EMPLOYEE.employee_first_name" class="form-control" /> 
-                <ValidationMessage For="() => EMPLOYEE.employee_first_name" class="text-danger" /> 
-            </div>        
+                <label for="employee_first_name" class="form-label">First Name</label>
+                <InputText id="employee_first_name" @bind-Value="Employee.employee_first_name" class="form-control" placeholder="Enter first name" />
+                <ValidationMessage For="() => Employee.employee_first_name" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="employee_last_name" class="form-label">employee_last_name:</label> 
-                <InputText id="employee_last_name" @bind-Value="EMPLOYEE.employee_last_name" class="form-control" /> 
-                <ValidationMessage For="() => EMPLOYEE.employee_last_name" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="position" class="form-label">position:</label> 
-                <InputText id="position" @bind-Value="EMPLOYEE.position" class="form-control" /> 
-                <ValidationMessage For="() => EMPLOYEE.position" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="hire_date" class="form-label">hire_date:</label> 
-                <InputDate id="hire_date" @bind-Value="EMPLOYEE.hire_date" class="form-control" /> 
-                <ValidationMessage For="() => EMPLOYEE.hire_date" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="salary" class="form-label">salary:</label> 
-                <InputNumber id="salary" @bind-Value="EMPLOYEE.salary" class="form-control" /> 
-                <ValidationMessage For="() => EMPLOYEE.salary" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="branchid" class="form-label">BRANCHID:</label> 
-                <InputNumber id="branchid" @bind-Value="EMPLOYEE.BRANCHID" class="form-control" /> 
-                <ValidationMessage For="() => EMPLOYEE.BRANCHID" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+                <label for="employee_last_name" class="form-label">Last Name</label>
+                <InputText id="employee_last_name" @bind-Value="Employee.employee_last_name" class="form-control" placeholder="Enter last name" />
+                <ValidationMessage For="() => Employee.employee_last_name" class="text-danger" />
+            </div>
+        </div>
     </div>
-</div>
 
-<div>
-    <a href="/employees">Back to List</a>
-</div>
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-briefcase me-2"></i>Employment Details</h3>
+        <div class="form-row">
+            <div class="mb-3">
+                <label for="position" class="form-label">Position</label>
+                <InputText id="position" @bind-Value="Employee.position" class="form-control" placeholder="e.g. Dance Instructor" />
+                <ValidationMessage For="() => Employee.position" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="branchid" class="form-label">Branch</label>
+                <InputSelect id="branchid" @bind-Value="Employee.BRANCHID" class="form-control">
+                    <option value="">Select a branch...</option>
+                    @if (branches != null)
+                    {
+                        @foreach (var branch in branches)
+                        {
+                            <option value="@branch.ID">@branch.branch_name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Employee.BRANCHID" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="mb-3">
+                <label for="hire_date" class="form-label">Hire Date</label>
+                <InputDate id="hire_date" @bind-Value="Employee.hire_date" class="form-control" />
+                <ValidationMessage For="() => Employee.hire_date" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="salary" class="form-label">Salary</label>
+                <InputNumber id="salary" @bind-Value="Employee.salary" class="form-control" placeholder="0.00" />
+                <ValidationMessage For="() => Employee.salary" class="text-danger" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i> Create Employee
+        </button>
+        <a href="/employees" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</EditForm>
 
 @code {
-    private EMPLOYEE EMPLOYEE { get; set; } = new();
+    private EMPLOYEE Employee { get; set; } = new()
+    {
+        hire_date = DateTime.Today
+    };
 
-    private async Task AddEMPLOYEE()
+    private List<BRANCH>? branches;
+
+    protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        context.EMPLOYEE.Add(EMPLOYEE);
+        branches = await context.BRANCH
+            .Select(b => new BRANCH { ID = b.ID, branch_name = b.branch_name })
+            .ToListAsync();
+    }
+
+    private async Task AddEmployee()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.EMPLOYEE.Add(Employee);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/employees");
     }

@@ -5,41 +5,93 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Employee Details - Dance Academy</PageTitle>
 
-<h1>Details</h1>
-
-<div>
-    <h2>EMPLOYEE</h2>
-    <hr />
-    @if (employee is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">employee_first_name</dt>
-            <dd class="col-sm-10">@employee.employee_first_name</dd>
-            <dt class="col-sm-2">employee_last_name</dt>
-            <dd class="col-sm-10">@employee.employee_last_name</dd>
-            <dt class="col-sm-2">position</dt>
-            <dd class="col-sm-10">@employee.position</dd>
-            <dt class="col-sm-2">hire_date</dt>
-            <dd class="col-sm-10">@employee.hire_date</dd>
-            <dt class="col-sm-2">salary</dt>
-            <dd class="col-sm-10">@employee.salary</dd>
-            <dt class="col-sm-2">BRANCHID</dt>
-            <dd class="col-sm-10">@employee.BRANCHID</dd>
-        </dl>
-        <div>
-            <a href="@($"/employees/edit?id={employee.ID}")">Edit</a> |
-            <a href="@($"/employees")">Back to List</a>
-        </div>
-    }
+<div class="page-header">
+    <h1><i class="bi bi-person-badge me-2"></i>Employee Details</h1>
+    <p>View complete employee information</p>
 </div>
+
+@if (employee is null)
+{
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading employee details...</span>
+    </div>
+}
+else
+{
+    <div class="content-card">
+        <div class="content-card-header">
+            <div>
+                <h2 class="content-card-title mb-0">@employee.employee_first_name @employee.employee_last_name</h2>
+                <span class="text-muted">Employee ID: @employee.ID</span>
+            </div>
+            <span class="badge-position" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                @(employee.position ?? "No Position")
+            </span>
+        </div>
+        
+        <h4 class="form-section-title"><i class="bi bi-person me-2"></i>Personal Information</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">First Name</div>
+                <div class="detail-value">@(employee.employee_first_name ?? "-")</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Last Name</div>
+                <div class="detail-value">@(employee.employee_last_name ?? "-")</div>
+            </div>
+        </div>
+
+        <h4 class="form-section-title"><i class="bi bi-briefcase me-2"></i>Employment Details</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">Position</div>
+                <div class="detail-value">@(employee.position ?? "-")</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Branch</div>
+                <div class="detail-value">@branchName</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Hire Date</div>
+                <div class="detail-value">@employee.hire_date.ToString("MMMM dd, yyyy")</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Salary</div>
+                <div class="detail-value" style="font-size: 1.25rem; color: #2e7d32;">
+                    @(employee.salary?.ToString("C") ?? "-")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="@($"/employees/edit?id={employee.ID}")" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Edit Employee
+        </a>
+        <a href="/employees" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+}
+
+<style>
+    .badge-position {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        background: #e3f2fd;
+        color: #1565c0;
+    }
+</style>
 
 @code {
     private EMPLOYEE? employee;
+    private string branchName = "-";
 
     [SupplyParameterFromQuery]
     private int ID { get; set; }
@@ -47,23 +99,32 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        employee = await context.EMPLOYEE
+        
+        var data = await context.EMPLOYEE
             .Where(e => e.ID == ID)
-            .Select(e => new EMPLOYEE
+            .Select(e => new 
             {
-                ID = e.ID,
-                employee_first_name = e.employee_first_name,
-                employee_last_name = e.employee_last_name,
-                position = e.position,
-                hire_date = e.hire_date,
-                salary = e.salary,
-                BRANCHID = e.BRANCHID
+                Employee = new EMPLOYEE
+                {
+                    ID = e.ID,
+                    employee_first_name = e.employee_first_name,
+                    employee_last_name = e.employee_last_name,
+                    position = e.position,
+                    hire_date = e.hire_date,
+                    salary = e.salary,
+                    BRANCHID = e.BRANCHID
+                },
+                BranchName = e.BRANCH != null ? e.BRANCH.branch_name : null
             })
             .FirstOrDefaultAsync();
 
-        if (employee is null)
+        if (data is null)
         {
             NavigationManager.NavigateTo("notfound");
+            return;
         }
+
+        employee = data.Employee;
+        branchName = data.BranchName ?? "-";
     }
 }
