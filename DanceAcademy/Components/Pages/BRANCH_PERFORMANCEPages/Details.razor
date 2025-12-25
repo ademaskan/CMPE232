@@ -5,41 +5,99 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Performance Details - Dance Academy</PageTitle>
 
-<h1>Details</h1>
-
-<div>
-    <h2>BRANCH_PERFORMANCE</h2>
-    <hr />
-    @if (branch_performance is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">BRANCHID</dt>
-            <dd class="col-sm-10">@branch_performance.BRANCHID</dd>
-            <dt class="col-sm-2">month</dt>
-            <dd class="col-sm-10">@branch_performance.month</dd>
-            <dt class="col-sm-2">year</dt>
-            <dd class="col-sm-10">@branch_performance.year</dd>
-            <dt class="col-sm-2">revenue</dt>
-            <dd class="col-sm-10">@branch_performance.revenue</dd>
-            <dt class="col-sm-2">expenses</dt>
-            <dd class="col-sm-10">@branch_performance.expenses</dd>
-            <dt class="col-sm-2">net_profit</dt>
-            <dd class="col-sm-10">@branch_performance.net_profit</dd>
-        </dl>
-        <div>
-            <a href="@($"/branch_performances/edit?id={branch_performance.ID}")">Edit</a> |
-            <a href="@($"/branch_performances")">Back to List</a>
-        </div>
-    }
+<div class="page-header">
+    <h1><i class="bi bi-graph-up-arrow me-2"></i>Performance Details</h1>
+    <p>View complete performance record</p>
 </div>
 
+@if (performance is null)
+{
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading performance data...</span>
+    </div>
+}
+else
+{
+    <div class="content-card">
+        <div class="content-card-header">
+            <div>
+                <h2 class="content-card-title mb-0">@branchName</h2>
+                <span class="text-muted">@GetMonthName(performance.month) @performance.year</span>
+            </div>
+            <span class="badge-profit @GetProfitBadgeClass(performance.net_profit)">
+                @(performance.net_profit >= 0 ? "Profit" : "Loss"): @(performance.net_profit?.ToString("C") ?? "-")
+            </span>
+        </div>
+        
+        <h4 class="form-section-title"><i class="bi bi-building me-2"></i>Branch & Period</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item">
+                <div class="detail-label">Branch</div>
+                <div class="detail-value">@branchName</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Month</div>
+                <div class="detail-value">@GetMonthName(performance.month)</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Year</div>
+                <div class="detail-value">@performance.year</div>
+            </div>
+        </div>
+
+        <h4 class="form-section-title"><i class="bi bi-currency-dollar me-2"></i>Financial Summary</h4>
+        <div class="details-grid mb-4">
+            <div class="detail-item" style="border-left-color: #2e7d32;">
+                <div class="detail-label">Revenue</div>
+                <div class="detail-value" style="color: #2e7d32; font-size: 1.25rem;">@performance.revenue.ToString("C")</div>
+            </div>
+            <div class="detail-item" style="border-left-color: #c62828;">
+                <div class="detail-label">Expenses</div>
+                <div class="detail-value" style="color: #c62828; font-size: 1.25rem;">@performance.expenses.ToString("C")</div>
+            </div>
+            <div class="detail-item" style="border-left-color: @(performance.net_profit >= 0 ? "#2e7d32" : "#c62828");">
+                <div class="detail-label">Net Profit</div>
+                <div class="detail-value" style="color: @(performance.net_profit >= 0 ? "#2e7d32" : "#c62828"); font-size: 1.25rem;">
+                    @(performance.net_profit?.ToString("C") ?? "-")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="@($"/branch_performances/edit?id={performance.ID}")" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Edit Record
+        </a>
+        <a href="/branch_performances" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+}
+
+<style>
+    .badge-profit {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    .badge-profit-positive {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+    .badge-profit-negative {
+        background: #ffebee;
+        color: #c62828;
+    }
+</style>
+
 @code {
-    private BRANCH_PERFORMANCE? branch_performance;
+    private BRANCH_PERFORMANCE? performance;
+    private string branchName = "";
 
     [SupplyParameterFromQuery]
     private int ID { get; set; }
@@ -47,23 +105,49 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        branch_performance = await context.BRANCH_PERFORMANCE
+        
+        var data = await context.BRANCH_PERFORMANCE
             .Where(bp => bp.ID == ID)
-            .Select(bp => new BRANCH_PERFORMANCE
+            .Select(bp => new 
             {
-                ID = bp.ID,
-                BRANCHID = bp.BRANCHID,
-                month = bp.month,
-                year = bp.year,
-                revenue = bp.revenue,
-                expenses = bp.expenses,
-                net_profit = bp.net_profit
+                Performance = new BRANCH_PERFORMANCE
+                {
+                    ID = bp.ID,
+                    BRANCHID = bp.BRANCHID,
+                    month = bp.month,
+                    year = bp.year,
+                    revenue = bp.revenue,
+                    expenses = bp.expenses,
+                    net_profit = bp.net_profit
+                },
+                BranchName = bp.BRANCH.branch_name
             })
             .FirstOrDefaultAsync();
 
-        if (branch_performance is null)
+        if (data is null)
         {
             NavigationManager.NavigateTo("notfound");
+            return;
         }
+
+        performance = data.Performance;
+        branchName = data.BranchName ?? "Unknown";
+    }
+
+    private string GetMonthName(int month)
+    {
+        return month switch
+        {
+            1 => "January", 2 => "February", 3 => "March", 4 => "April",
+            5 => "May", 6 => "June", 7 => "July", 8 => "August",
+            9 => "September", 10 => "October", 11 => "November", 12 => "December",
+            _ => $"Month {month}"
+        };
+    }
+
+    private string GetProfitBadgeClass(decimal? profit)
+    {
+        if (!profit.HasValue) return "";
+        return profit.Value >= 0 ? "badge-profit-positive" : "badge-profit-negative";
     }
 }

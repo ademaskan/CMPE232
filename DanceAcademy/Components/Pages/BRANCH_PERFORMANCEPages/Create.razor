@@ -5,63 +5,122 @@
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Create</PageTitle>
+<PageTitle>Add Performance Record - Dance Academy</PageTitle>
 
-<h1>Create</h1>
+<div class="page-header">
+    <h1><i class="bi bi-plus-circle me-2"></i>Add Performance Record</h1>
+    <p>Record monthly branch performance</p>
+</div>
 
-<h2>BRANCH_PERFORMANCE</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="BRANCH_PERFORMANCE" OnValidSubmit="AddBRANCH_PERFORMANCE">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
+<EditForm Model="Performance" OnValidSubmit="AddPerformance" FormName="CreatePerformance">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="alert alert-danger" role="alert"/>
+    
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-building me-2"></i>Branch & Period</h3>
+        <div class="form-row">
             <div class="mb-3">
-                <label for="branchid" class="form-label">BRANCHID:</label> 
-                <InputNumber id="branchid" @bind-Value="BRANCH_PERFORMANCE.BRANCHID" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH_PERFORMANCE.BRANCHID" class="text-danger" /> 
-            </div>        
+                <label for="branchid" class="form-label">Branch</label>
+                <InputSelect id="branchid" @bind-Value="Performance.BRANCHID" class="form-control">
+                    <option value="0">Select a branch...</option>
+                    @if (branches != null)
+                    {
+                        @foreach (var branch in branches)
+                        {
+                            <option value="@branch.ID">@branch.branch_name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Performance.BRANCHID" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-row">
             <div class="mb-3">
-                <label for="month" class="form-label">month:</label> 
-                <InputNumber id="month" @bind-Value="BRANCH_PERFORMANCE.month" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH_PERFORMANCE.month" class="text-danger" /> 
-            </div>        
+                <label for="month" class="form-label">Month</label>
+                <InputSelect id="month" @bind-Value="Performance.month" class="form-control">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </InputSelect>
+                <ValidationMessage For="() => Performance.month" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="year" class="form-label">year:</label> 
-                <InputNumber id="year" @bind-Value="BRANCH_PERFORMANCE.year" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH_PERFORMANCE.year" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="revenue" class="form-label">revenue:</label> 
-                <InputNumber id="revenue" @bind-Value="BRANCH_PERFORMANCE.revenue" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH_PERFORMANCE.revenue" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="expenses" class="form-label">expenses:</label> 
-                <InputNumber id="expenses" @bind-Value="BRANCH_PERFORMANCE.expenses" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH_PERFORMANCE.expenses" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="net_profit" class="form-label">net_profit:</label> 
-                <InputNumber id="net_profit" @bind-Value="BRANCH_PERFORMANCE.net_profit" class="form-control" /> 
-                <ValidationMessage For="() => BRANCH_PERFORMANCE.net_profit" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
+                <label for="year" class="form-label">Year</label>
+                <InputNumber id="year" @bind-Value="Performance.year" class="form-control" />
+                <ValidationMessage For="() => Performance.year" class="text-danger" />
+            </div>
+        </div>
     </div>
-</div>
 
-<div>
-    <a href="/branch_performances">Back to List</a>
-</div>
+    <div class="form-section">
+        <h3 class="form-section-title"><i class="bi bi-currency-dollar me-2"></i>Financial Data</h3>
+        <div class="form-row">
+            <div class="mb-3">
+                <label for="revenue" class="form-label">Revenue</label>
+                <InputNumber id="revenue" @bind-Value="Performance.revenue" class="form-control" placeholder="0.00" />
+                <ValidationMessage For="() => Performance.revenue" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="expenses" class="form-label">Expenses</label>
+                <InputNumber id="expenses" @bind-Value="Performance.expenses" class="form-control" placeholder="0.00" />
+                <ValidationMessage For="() => Performance.expenses" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="mb-3">
+                <label for="net_profit" class="form-label">Net Profit (optional - auto-calculated if empty)</label>
+                <InputNumber id="net_profit" @bind-Value="Performance.net_profit" class="form-control" placeholder="Auto-calculated" />
+                <ValidationMessage For="() => Performance.net_profit" class="text-danger" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-lg"></i> Create Record
+        </button>
+        <a href="/branch_performances" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</EditForm>
 
 @code {
-    private BRANCH_PERFORMANCE BRANCH_PERFORMANCE { get; set; } = new();
+    private BRANCH_PERFORMANCE Performance { get; set; } = new()
+    {
+        month = DateTime.Today.Month,
+        year = DateTime.Today.Year
+    };
 
-    private async Task AddBRANCH_PERFORMANCE()
+    private List<BRANCH>? branches;
+
+    protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        context.BRANCH_PERFORMANCE.Add(BRANCH_PERFORMANCE);
+        branches = await context.BRANCH
+            .Select(b => new BRANCH { ID = b.ID, branch_name = b.branch_name })
+            .ToListAsync();
+    }
+
+    private async Task AddPerformance()
+    {
+        // Auto-calculate net profit if not provided
+        if (!Performance.net_profit.HasValue)
+        {
+            Performance.net_profit = Performance.revenue - Performance.expenses;
+        }
+
+        using var context = DbFactory.CreateDbContext();
+        context.BRANCH_PERFORMANCE.Add(Performance);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/branch_performances");
     }

@@ -7,48 +7,212 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<DanceAcademy.Data.DanceAcademyContext> DbFactory
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Branch Performance - Dance Academy</PageTitle>
 
-<h1>Index</h1>
+<div class="page-header">
+    <h1><i class="bi bi-graph-up-arrow me-2"></i>Branch Performance</h1>
+    <p>Track financial performance by branch</p>
+    <div class="page-header-actions">
+        <a href="branch_performances/create" class="btn btn-light">
+            <i class="bi bi-plus-lg"></i> Add Performance Record
+        </a>
+    </div>
+</div>
 
-<p>
-    <a href="branch_performances/create">Create New</a>
-</p>
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="table-search">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search by branch..." @bind="searchTerm" @bind:event="oninput" @bind:after="OnSearchChanged" />
+        </div>
+        <div class="text-muted">
+            @if (performanceCount > 0)
+            {
+                <span>@performanceCount record(s) found</span>
+            }
+        </div>
+    </div>
+    
+    @if (performances == null)
+    {
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <span>Loading performance data...</span>
+        </div>
+    }
+    else if (!performances.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <div class="empty-state-title">No performance records yet</div>
+            <p class="empty-state-text">Start tracking branch performance by adding your first record.</p>
+            <a href="branch_performances/create" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Add First Record
+            </a>
+        </div>
+    }
+    else
+    {
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Branch</th>
+                    <th>Period</th>
+                    <th class="col-financial">Revenue</th>
+                    <th class="col-financial">Expenses</th>
+                    <th class="col-financial">Net Profit</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var perf in performances)
+                {
+                    <tr>
+                        <td>
+                            <div class="member-name">
+                                <div class="member-avatar">
+                                    @GetInitials(perf.BranchName)
+                                </div>
+                                <div class="member-info">
+                                    <span class="member-fullname">@perf.BranchName</span>
+                                    <span class="member-email">ID: @perf.BRANCHID</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <strong>@GetMonthName(perf.month) @perf.year</strong>
+                        </td>
+                        <td class="text-success col-financial">
+                            <strong>@perf.revenue.ToString("C")</strong>
+                        </td>
+                        <td class="text-danger col-financial">
+                            @perf.expenses.ToString("C")
+                        </td>
+                        <td class="col-financial">
+                            <span class="@GetProfitClass(perf.net_profit)">
+                                <strong>@(perf.net_profit?.ToString("C") ?? "-")</strong>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="@($"branch_performances/details?id={perf.ID}")" class="btn-action btn-action-view" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@($"branch_performances/edit?id={perf.ID}")" class="btn-action btn-action-edit" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="@($"branch_performances/delete?id={perf.ID}")" class="btn-action btn-action-delete" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 
-<QuickGrid Class="table" Items="BranchPerformances">
-    <PropertyColumn Property="branch_performance => branch_performance.BRANCHID" />
-    <PropertyColumn Property="branch_performance => branch_performance.month" />
-    <PropertyColumn Property="branch_performance => branch_performance.year" />
-    <PropertyColumn Property="branch_performance => branch_performance.revenue" />
-    <PropertyColumn Property="branch_performance => branch_performance.expenses" />
-    <PropertyColumn Property="branch_performance => branch_performance.net_profit" />
-
-    <TemplateColumn Context="branch_performance">
-        <a href="@($"branch_performances/edit?id={branch_performance.ID}")">Edit</a> |
-        <a href="@($"branch_performances/details?id={branch_performance.ID}")">Details</a> |
-        <a href="@($"branch_performances/delete?id={branch_performance.ID}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
+<style>
+    .text-success { color: #2e7d32 !important; }
+    .text-danger { color: #c62828 !important; }
+    .text-profit-positive { color: #2e7d32; }
+    .text-profit-negative { color: #c62828; }
+    .col-financial {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+        min-width: 130px;
+    }
+</style>
 
 @code {
     private DanceAcademyContext context = default!;
+    private List<PerformanceViewModel>? performances;
+    private int performanceCount;
+    private string searchTerm = "";
 
-    private IQueryable<BRANCH_PERFORMANCE> BranchPerformances => 
-        context.BRANCH_PERFORMANCE.Select(bp => new BRANCH_PERFORMANCE 
-        { 
-            ID = bp.ID, 
-            BRANCHID = bp.BRANCHID, 
-            month = bp.month,
-            year = bp.year,
-            revenue = bp.revenue,
-            expenses = bp.expenses,
-            net_profit = bp.net_profit
-        });
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         context = DbFactory.CreateDbContext();
+        await LoadPerformances();
+    }
+
+    private async Task OnSearchChanged()
+    {
+        await LoadPerformances();
+    }
+
+    private async Task LoadPerformances()
+    {
+        var query = context.BRANCH_PERFORMANCE
+            .Include(bp => bp.BRANCH)
+            .AsQueryable();
+        
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            var term = searchTerm.ToLower();
+            query = query.Where(bp => 
+                bp.BRANCH.branch_name != null && bp.BRANCH.branch_name.ToLower().Contains(term));
+        }
+        
+        performances = await query
+            .Select(bp => new PerformanceViewModel 
+            { 
+                ID = bp.ID, 
+                BRANCHID = bp.BRANCHID,
+                BranchName = bp.BRANCH.branch_name ?? "Unknown",
+                month = bp.month,
+                year = bp.year,
+                revenue = bp.revenue,
+                expenses = bp.expenses,
+                net_profit = bp.net_profit
+            })
+            .OrderByDescending(bp => bp.year)
+            .ThenByDescending(bp => bp.month)
+            .ToListAsync();
+            
+        performanceCount = performances.Count;
+    }
+
+    private string GetInitials(string? name)
+    {
+        if (string.IsNullOrEmpty(name)) return "?";
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length >= 2)
+            return (parts[0][0].ToString() + parts[1][0].ToString()).ToUpper();
+        return name.Length >= 2 ? name.Substring(0, 2).ToUpper() : name.ToUpper();
+    }
+
+    private string GetMonthName(int month)
+    {
+        return month switch
+        {
+            1 => "January", 2 => "February", 3 => "March", 4 => "April",
+            5 => "May", 6 => "June", 7 => "July", 8 => "August",
+            9 => "September", 10 => "October", 11 => "November", 12 => "December",
+            _ => $"Month {month}"
+        };
+    }
+
+    private string GetProfitClass(decimal? profit)
+    {
+        if (!profit.HasValue) return "";
+        return profit.Value >= 0 ? "text-profit-positive" : "text-profit-negative";
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
+
+    private class PerformanceViewModel
+    {
+        public int ID { get; set; }
+        public int BRANCHID { get; set; }
+        public string BranchName { get; set; } = "";
+        public int month { get; set; }
+        public int year { get; set; }
+        public decimal revenue { get; set; }
+        public decimal expenses { get; set; }
+        public decimal? net_profit { get; set; }
+    }
 }
