@@ -387,7 +387,7 @@
                 .Where(f => f.transaction_type == "Income" || f.transaction_type == "Payment")
                 .SumAsync(f => f.amount);
 
-            // Members by Gender
+            // Members by Gender 
             genderData = await context.MEMBER
                 .GroupBy(m => m.member_gender)
                 .Select(g => new ChartDataItem { Category = g.Key ?? "Unknown", Count = g.Count() })

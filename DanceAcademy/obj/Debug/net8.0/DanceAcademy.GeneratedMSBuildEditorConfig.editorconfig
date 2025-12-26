@@ -72,10 +72,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xCUkFOQ0hfUEVSRk9STUFOQ0VQYWdlc1xJbmRleC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb3VudGVyLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/COURSE_CATEGORYPages/Create.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDT1VSU0VfQ0FURUdPUllQYWdlc1xDcmVhdGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -202,10 +198,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/MEMBERSHIPPages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNRU1CRVJTSElQUGFnZXNcSW5kZXgucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Pages/Weather.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xXZWF0aGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/adem/source/repos/CMPE232/DanceAcademy/Components/Routes.razor]

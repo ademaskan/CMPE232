@@ -266,3 +266,5 @@ C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\DanceAcademy.ge
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\ref\DanceAcademy.dll
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\bin\Debug\net8.0\Radzen.Blazor.dll
 C:\Users\adem\source\repos\CMPE232\DanceAcademy\bin\Debug\net8.0\System.Linq.Dynamic.Core.dll
+C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\DanceAcademy.sourcelink.json
+C:\Users\adem\source\repos\CMPE232\DanceAcademy\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

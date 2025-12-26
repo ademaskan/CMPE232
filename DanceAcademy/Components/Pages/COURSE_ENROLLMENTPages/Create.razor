@@ -98,6 +98,6 @@
         using var context = DbFactory.CreateDbContext();
         context.COURSE_ENROLLMENT.Add(Enrollment);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/course_enrollments");
+        NavigationManager.NavigateTo("/course_enrollments"); 
     }
 }
